@@ -6,34 +6,32 @@ const config: Config = {
     extend: {
       colors: {
         sol: {
-          gold: "#FFD700",
-          amber: "#D4A017",
-          orange: "#EA580C",
-          dark: "#0a0a0a",
-          card: "#141414",
-          border: "#222222",
+          gold: "#F5A623",
+          "gold-dark": "#D4891A",
+          dark: "#0A0A0A",
+          darker: "#050505",
+          card: "#111111",
+          border: "#1a1a1a",
         },
         rasta: {
-          red: "#CD2026",
-          gold: "#FFD700",
-          green: "#009B3A",
-          "red-dark": "#8B1A1A",
-          "green-dark": "#006B28",
+          red: "#E4312B",
+          yellow: "#F8D12F",
+          green: "#2D9B42",
         },
       },
       fontFamily: {
-        display: ["Oswald", "sans-serif"],
-        body: ["Inter", "sans-serif"],
-        accent: ["'Permanent Marker'", "cursive"],
+        display: ["'Dela Gothic One'", "sans-serif"],
+        body: ["'Inter'", "sans-serif"],
+        accent: ["'Playfair Display'", "serif"],
       },
       keyframes: {
         "fade-in-up": {
           "0%": { opacity: "0", transform: "translateY(30px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
-        "pulse-glow": {
-          "0%, 100%": { boxShadow: "0 0 20px rgba(255, 215, 0, 0.3)" },
-          "50%": { boxShadow: "0 0 40px rgba(255, 215, 0, 0.6)" },
+        "pulse-dot": {
+          "0%, 100%": { opacity: "1", transform: "scale(1)" },
+          "50%": { opacity: "0.5", transform: "scale(1.5)" },
         },
         "slide-in-right": {
           "0%": { transform: "translateX(100%)" },
@@ -45,9 +43,9 @@ const config: Config = {
         },
       },
       animation: {
-        "fade-in-up": "fade-in-up 0.6s ease-out forwards",
-        "pulse-glow": "pulse-glow 2s ease-in-out infinite",
-        "slide-in-right": "slide-in-right 0.3s ease-out forwards",
+        "fade-in-up": "fade-in-up 0.8s ease forwards",
+        "pulse-dot": "pulse-dot 2s infinite",
+        "slide-in-right": "slide-in-right 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         "slide-out-right": "slide-out-right 0.3s ease-in forwards",
       },
     },
