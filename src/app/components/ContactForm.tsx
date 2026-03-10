@@ -14,8 +14,8 @@ export default function ContactForm() {
   return (
     <div className="relative">
       {sent && (
-        <div className="fixed top-20 right-4 z-50 bg-sol-gold text-black px-6 py-3 rounded-lg font-semibold shadow-lg animate-fade-in-up">
-          ✓ Message sent!
+        <div className="fixed top-20 right-4 z-50 bg-rasta-gold text-black px-6 py-3 rounded-lg font-semibold shadow-lg animate-fade-in-up">
+          ✓ Message sent! One love 🤙
         </div>
       )}
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -24,7 +24,7 @@ export default function ContactForm() {
           <input
             type="text"
             required
-            className="w-full bg-sol-card border border-sol-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-sol-gold transition-colors"
+            className="input-rasta w-full bg-sol-card border border-sol-border rounded-lg px-4 py-3 text-white transition-all duration-200 min-h-[44px]"
             placeholder="Your name"
           />
         </div>
@@ -33,7 +33,7 @@ export default function ContactForm() {
           <input
             type="email"
             required
-            className="w-full bg-sol-card border border-sol-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-sol-gold transition-colors"
+            className="input-rasta w-full bg-sol-card border border-sol-border rounded-lg px-4 py-3 text-white transition-all duration-200 min-h-[44px]"
             placeholder="your@email.com"
           />
         </div>
@@ -41,10 +41,11 @@ export default function ContactForm() {
           <label className="block text-sm font-medium text-gray-400 mb-2 font-display uppercase tracking-wider">Subject</label>
           <select
             required
-            className="w-full bg-sol-card border border-sol-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-sol-gold transition-colors"
+            className="input-rasta w-full bg-sol-card border border-sol-border rounded-lg px-4 py-3 text-white transition-all duration-200 min-h-[44px]"
           >
             <option value="">Select a subject</option>
             <option value="booking">Booking</option>
+            <option value="reggae-sunday">Reggae Sunday Booking</option>
             <option value="press">Press</option>
             <option value="general">General</option>
             <option value="merch">Merch</option>
@@ -55,13 +56,13 @@ export default function ContactForm() {
           <textarea
             required
             rows={5}
-            className="w-full bg-sol-card border border-sol-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-sol-gold transition-colors resize-none"
+            className="input-rasta w-full bg-sol-card border border-sol-border rounded-lg px-4 py-3 text-white transition-all duration-200 resize-none"
             placeholder="What's on your mind?"
           />
         </div>
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-sol-gold to-sol-amber text-black font-display font-bold uppercase tracking-wider py-3 rounded-lg hover:from-sol-amber hover:to-sol-orange transition-all duration-300 hover:scale-[1.02]"
+          className="btn-rasta w-full bg-gradient-to-r from-rasta-gold to-rasta-green text-black font-display font-bold uppercase tracking-wider py-3 rounded-lg hover:from-rasta-green hover:to-rasta-gold transition-all duration-300 min-h-[44px]"
         >
           Send Message
         </button>

@@ -2,7 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@400;500;600;700&family=Permanent+Marker&display=swap');
+
+:root {
+  --rasta-red: #CD2026;
+  --rasta-gold: #FFD700;
+  --rasta-green: #009B3A;
+}
 
 body {
   background: #0a0a0a;
@@ -10,21 +16,150 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
+/* Noise overlay - distressed texture */
 .noise-overlay {
   position: absolute;
   inset: 0;
-  opacity: 0.05;
+  opacity: 0.07;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 256px 256px;
 }
 
+/* Rasta gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #F59E0B, #EA580C);
+  background: linear-gradient(135deg, var(--rasta-red), var(--rasta-gold), var(--rasta-green));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Rasta gradient text alt (gold to green) */
+.gradient-text-gold {
+  background: linear-gradient(135deg, var(--rasta-gold), var(--rasta-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Rasta stripe — thin horizontal bars */
+.rasta-stripe {
+  display: flex;
+  height: 4px;
+}
+.rasta-stripe > div {
+  flex: 1;
+}
+
+/* Rasta border gradient for cards */
+.rasta-border-card {
+  position: relative;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+.rasta-border-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--rasta-red), var(--rasta-gold), var(--rasta-green));
+  z-index: -1;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+.rasta-border-card:hover::before {
+  opacity: 0.8;
+}
+
+/* Nav link underline animation */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--rasta-red), var(--rasta-gold), var(--rasta-green));
+  transition: width 0.3s ease;
+}
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* Button hover effects */
+.btn-rasta {
+  transition: all 0.2s ease-out;
+}
+.btn-rasta:hover {
+  transform: scale(1.05);
+}
+.btn-rasta:active {
+  transform: scale(0.98);
+}
+
+/* Card lift on hover */
+.card-lift {
+  transition: all 0.3s ease;
+}
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(255, 215, 0, 0.15);
+}
+
+/* Gold glow focus for form inputs */
+.input-rasta:focus {
+  border-color: var(--rasta-gold) !important;
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+  outline: none;
+}
+
+/* Gold number badge */
+.track-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--rasta-gold), #D4A017);
+  color: #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* Mobile menu overlay */
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.mobile-menu-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 80%;
+  max-width: 320px;
+  z-index: 10000;
+  background: linear-gradient(180deg, #0a0a0a 0%, #111111 100%);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Page transition */
+.page-enter {
+  animation: fade-in-up 0.4s ease-out;
 }
 
 /* Scrollbar */
@@ -39,10 +174,21 @@ body {
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: var(--rasta-gold);
 }
 
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;
+}
+
+/* Spotify embed responsive */
+.spotify-embed iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Gold glow for shop hover */
+.gold-glow:hover {
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
 }
