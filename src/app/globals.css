@@ -569,14 +569,58 @@ body {
   transform: scale(1.05);
 }
 
-/* Track counter */
-.playbar-counter {
+/* Progress bar */
+.playbar-progress {
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  cursor: pointer;
+  position: relative;
+}
+.playbar-progress:hover {
+  height: 5px;
+}
+.playbar-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--rasta-green), var(--gold));
+  border-radius: 0 2px 2px 0;
+  transition: width 0.3s linear;
+}
+
+/* Album art inside record */
+.playbar-record-art {
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* Status dot */
+.playbar-status {
+  flex-shrink: 0;
+}
+.playbar-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: background 0.3s;
+}
+.playbar-status-connected {
+  background: var(--rasta-green);
+  box-shadow: 0 0 8px rgba(45,155,66,0.5);
+}
+
+/* Time display */
+.playbar-time {
   font-size: 0.7rem;
   color: var(--text-muted);
-  letter-spacing: 1px;
-  flex-shrink: 0;
-  min-width: 32px;
-  text-align: center;
+  opacity: 0.7;
+}
+
+/* FAB paused state */
+.playbar-fab-paused {
+  animation: none !important;
 }
 
 /* ── Expanded content ── */
@@ -631,6 +675,82 @@ body {
 }
 .playbar-track-active .playbar-track-title {
   color: var(--gold);
+}
+.playbar-track-art {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.playbar-track-subtitle {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+.playbar-tracklist-header {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 8px 12px 4px;
+}
+
+/* Now playing expanded */
+.playbar-now-playing {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  margin-bottom: 8px;
+}
+.playbar-album-art {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.playbar-np-title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+.playbar-np-artist {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Connect prompt */
+.playbar-connect {
+  padding: 16px 0;
+  text-align: center;
+}
+.playbar-connect-text {
+  margin-bottom: 16px;
+}
+
+/* Footer */
+.playbar-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  margin-top: 8px;
+  border-top: 1px solid var(--card-border);
+}
+.playbar-logout {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+.playbar-logout:hover {
+  color: var(--rasta-red);
+  background: rgba(228,49,43,0.1);
 }
 
 /* EQ animation bars */

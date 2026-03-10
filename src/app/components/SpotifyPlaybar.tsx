@@ -1,70 +1,88 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback } from "react";
+import { useSpotify } from "./SpotifyProvider";
 
-interface Track {
-  id: string;
-  title: string;
-  artist: string;
-  spotifyUri: string;
+// Fallback embed URI for non-authenticated / non-premium users
+const ARTIST_EMBED = "https://open.spotify.com/embed/artist/4iYxgancLoKojQUwbWkIGT?utm_source=generator&theme=0";
+const ARTIST_URI = "spotify:artist:4iYxgancLoKojQUwbWkIGT";
+
+function formatTime(ms: number) {
+  const s = Math.floor(ms / 1000);
+  const min = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${min}:${sec.toString().padStart(2, "0")}`;
 }
 
-const TRACKS: Track[] = [
-  { id: "1", title: "Three Worlds", artist: "King Sol & The Vibes", spotifyUri: "album/5KRIMITzqnOvaEsMQnKBpj" },
-  { id: "2", title: "Mass Shooting", artist: "King Sol & The Vibes", spotifyUri: "track/0MxYNEPrQmMQKmEJZmhKma" },
-  { id: "3", title: "Broken History", artist: "King Sol & The Vibes", spotifyUri: "track/6B4FxPn1Q4VfN0FxK2Xpml" },
-  { id: "4", title: "Corona Panic", artist: "King Sol & The Vibes", spotifyUri: "track/3VTJi6kQhleOA2XkP0Gxjd" },
-  { id: "5", title: "Ooh Baby", artist: "King Sol & The Vibes", spotifyUri: "track/5GjyK9gDMAKpOxJnuOVfMp" },
-  { id: "6", title: "We Will Rise", artist: "King Sol & The Vibes", spotifyUri: "track/1RnhS2FD3PKcPm0iOXkZ16" },
-  { id: "7", title: "Political Brother", artist: "King Sol & The Vibes", spotifyUri: "track/6qLB5nqEJxgQrRxAG9sTOw" },
-  { id: "8", title: "Reggae Blues", artist: "King Sol & The Vibes", spotifyUri: "track/4x0LAzBowZo3nY3JePrvNg" },
-];
-
 export default function SpotifyPlaybar() {
+  const spotify = useSpotify();
   const [isOpen, setIsOpen] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const track = TRACKS[currentIndex];
+  const { currentTrack, isPlaying, isAuthenticated, isSDKReady, position, duration, queue } = spotify;
 
-  const handlePrev = useCallback(() => {
-    setCurrentIndex((i) => (i === 0 ? TRACKS.length - 1 : i - 1));
-    setIsPlaying(true);
-  }, []);
+  const toggleExpanded = useCallback(() => setIsExpanded((e) => !e), []);
 
-  const handleNext = useCallback(() => {
-    setCurrentIndex((i) => (i === TRACKS.length - 1 ? 0 : i + 1));
-    setIsPlaying(true);
-  }, []);
+  const handlePlay = useCallback(async () => {
+    if (!isAuthenticated) {
+      spotify.login();
+      return;
+    }
+    if (!isSDKReady) return;
 
-  const togglePlay = useCallback(() => {
-    setIsPlaying((p) => !p);
+    if (currentTrack) {
+      await spotify.togglePlay();
+    } else {
+      // First play — start the artist's music
+      await spotify.playArtist();
+    }
     if (!isOpen) setIsOpen(true);
-  }, [isOpen]);
+  }, [isAuthenticated, isSDKReady, currentTrack, isOpen, spotify]);
 
-  const toggleExpanded = useCallback(() => {
-    setIsExpanded((e) => !e);
-  }, []);
+  const handleNext = useCallback(async () => {
+    if (isSDKReady) await spotify.next();
+  }, [isSDKReady, spotify]);
 
-  // Open the bar when a track starts
-  useEffect(() => {
-    if (isPlaying && !isOpen) setIsOpen(true);
-  }, [isPlaying, isOpen]);
+  const handlePrev = useCallback(async () => {
+    if (isSDKReady) await spotify.previous();
+  }, [isSDKReady, spotify]);
 
-  const spotifyEmbedUrl = `https://open.spotify.com/embed/${track.spotifyUri}?utm_source=generator&theme=0`;
+  const handleSeek = useCallback(
+    async (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!duration) return;
+      const rect = e.currentTarget.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      await spotify.seek(Math.round(pct * duration));
+    },
+    [duration, spotify]
+  );
+
+  const handleTrackClick = useCallback(
+    async (uri: string) => {
+      if (isSDKReady) {
+        await spotify.play(uri);
+      }
+    },
+    [isSDKReady, spotify]
+  );
+
+  const progressPct = duration > 0 ? Math.min((position / duration) * 100, 100) : 0;
+
+  // Display info — either from SDK or defaults
+  const trackName = currentTrack?.name || "King Sol & The Vibes";
+  const artistName = currentTrack?.artist || "Tap play to start listening";
+  const albumArt = currentTrack?.albumArt;
 
   return (
     <>
       {/* Floating Music Button (when bar is closed) */}
       {!isOpen && (
         <button
-          onClick={() => { setIsOpen(true); }}
+          onClick={() => setIsOpen(true)}
           className="playbar-fab"
           aria-label="Open music player"
         >
-          <div className="playbar-fab-record">
+          <div className={`playbar-fab-record ${isPlaying ? "" : "playbar-fab-paused"}`}>
             <div className="playbar-fab-grooves" />
             <div className="playbar-fab-label" />
           </div>
@@ -73,7 +91,7 @@ export default function SpotifyPlaybar() {
 
       {/* Playbar */}
       <div className={`playbar ${isOpen ? "playbar-open" : ""} ${isExpanded ? "playbar-expanded" : ""}`}>
-        {/* Collapse / expand handle */}
+        {/* Handle */}
         <button
           onClick={isExpanded ? toggleExpanded : () => setIsOpen(false)}
           className="playbar-handle"
@@ -84,107 +102,189 @@ export default function SpotifyPlaybar() {
           </svg>
         </button>
 
+        {/* Progress bar (thin line above controls) */}
+        {isSDKReady && duration > 0 && (
+          <div className="playbar-progress" onClick={handleSeek}>
+            <div className="playbar-progress-fill" style={{ width: `${progressPct}%` }} />
+          </div>
+        )}
+
         {/* Main bar content */}
         <div className="playbar-main">
-          {/* Spinning Record */}
+          {/* Spinning Record / Album Art */}
           <div className="playbar-record-wrapper" onClick={toggleExpanded}>
             <div className={`playbar-record ${isPlaying ? "playbar-spinning" : ""}`}>
-              {/* Vinyl grooves */}
-              <div className="playbar-groove playbar-groove-1" />
-              <div className="playbar-groove playbar-groove-2" />
-              <div className="playbar-groove playbar-groove-3" />
+              {albumArt ? (
+                <img src={albumArt} alt="" className="playbar-record-art" />
+              ) : (
+                <>
+                  <div className="playbar-groove playbar-groove-1" />
+                  <div className="playbar-groove playbar-groove-2" />
+                  <div className="playbar-groove playbar-groove-3" />
+                </>
+              )}
               {/* Center label */}
               <div className="playbar-label">
                 <div className="playbar-label-inner">
                   <span className="playbar-label-text">KS</span>
                 </div>
               </div>
-              {/* Shine effect */}
+              {/* Shine */}
               <div className="playbar-shine" />
             </div>
           </div>
 
           {/* Track info */}
           <div className="playbar-info">
-            <div className="playbar-title">{track.title}</div>
-            <div className="playbar-artist">{track.artist}</div>
+            <div className="playbar-title">{trackName}</div>
+            <div className="playbar-artist">
+              {artistName}
+              {isSDKReady && duration > 0 && (
+                <span className="playbar-time"> — {formatTime(position)} / {formatTime(duration)}</span>
+              )}
+            </div>
           </div>
 
           {/* Controls */}
           <div className="playbar-controls">
-            <button onClick={handlePrev} className="playbar-btn" aria-label="Previous track">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
-              </svg>
-            </button>
+            {isAuthenticated && isSDKReady ? (
+              <>
+                <button onClick={handlePrev} className="playbar-btn" aria-label="Previous track">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+                  </svg>
+                </button>
 
-            <button onClick={togglePlay} className="playbar-btn playbar-btn-play" aria-label={isPlaying ? "Pause" : "Play"}>
-              {isPlaying ? (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                </svg>
-              ) : (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              )}
-            </button>
+                <button onClick={handlePlay} className="playbar-btn playbar-btn-play" aria-label={isPlaying ? "Pause" : "Play"}>
+                  {isPlaying ? (
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                    </svg>
+                  ) : (
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  )}
+                </button>
 
-            <button onClick={handleNext} className="playbar-btn" aria-label="Next track">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
-              </svg>
-            </button>
+                <button onClick={handleNext} className="playbar-btn" aria-label="Next track">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+                  </svg>
+                </button>
+              </>
+            ) : (
+              <button onClick={handlePlay} className="playbar-btn playbar-btn-play" aria-label="Connect Spotify">
+                {!isAuthenticated ? (
+                  /* Spotify icon for connect */
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+                  </svg>
+                ) : (
+                  /* Loading spinner while SDK loads */
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="animate-spin">
+                    <path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83" />
+                  </svg>
+                )}
+              </button>
+            )}
           </div>
 
-          {/* Track counter */}
-          <div className="playbar-counter">
-            {currentIndex + 1}/{TRACKS.length}
-          </div>
+          {/* Auth status indicator */}
+          {isAuthenticated && (
+            <div className="playbar-status">
+              <div className={`playbar-status-dot ${isSDKReady ? "playbar-status-connected" : ""}`} />
+            </div>
+          )}
         </div>
 
-        {/* Expanded view: Spotify embed + track list */}
+        {/* Expanded content */}
         {isExpanded && (
           <div className="playbar-expanded-content">
-            {/* Spotify embed for actual playback */}
-            <div className="playbar-embed">
-              <iframe
-                ref={iframeRef}
-                src={spotifyEmbedUrl}
-                width="100%"
-                height="152"
-                frameBorder="0"
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                loading="lazy"
-                style={{ borderRadius: "12px" }}
-              />
-            </div>
-
-            {/* Track list */}
-            <div className="playbar-tracklist">
-              {TRACKS.map((t, i) => (
-                <button
-                  key={t.id}
-                  onClick={() => { setCurrentIndex(i); setIsPlaying(true); }}
-                  className={`playbar-track-item ${i === currentIndex ? "playbar-track-active" : ""}`}
-                >
-                  <div className={`playbar-track-num ${i === currentIndex ? "text-sol-gold" : "text-[#555]"}`}>
-                    {i === currentIndex && isPlaying ? (
-                      <span className="playbar-eq">
-                        <span /><span /><span />
-                      </span>
-                    ) : (
-                      String(i + 1).padStart(2, "0")
+            {isAuthenticated && isSDKReady ? (
+              <>
+                {/* Now playing large view */}
+                {currentTrack && (
+                  <div className="playbar-now-playing">
+                    {currentTrack.albumArt && (
+                      <img src={currentTrack.albumArt} alt={currentTrack.name} className="playbar-album-art" />
                     )}
+                    <div>
+                      <div className="playbar-np-title">{currentTrack.name}</div>
+                      <div className="playbar-np-artist">{currentTrack.artist}</div>
+                    </div>
                   </div>
-                  <div className="playbar-track-title">{t.title}</div>
-                </button>
-              ))}
-            </div>
+                )}
+
+                {/* Up next */}
+                {queue.length > 0 && (
+                  <div className="playbar-tracklist">
+                    <div className="playbar-tracklist-header">Up Next</div>
+                    {queue.map((t, i) => (
+                      <button
+                        key={`${t.uri}-${i}`}
+                        onClick={() => handleTrackClick(t.uri)}
+                        className={`playbar-track-item`}
+                      >
+                        <div className="playbar-track-num text-[#555]">
+                          {String(i + 1).padStart(2, "0")}
+                        </div>
+                        {t.albumArt && <img src={t.albumArt} alt="" className="playbar-track-art" />}
+                        <div>
+                          <div className="playbar-track-title">{t.name}</div>
+                          <div className="playbar-track-subtitle">{t.artist}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* User info + logout */}
+                <div className="playbar-footer">
+                  <span className="text-[#555] text-[0.75rem]">
+                    Connected as {spotify.userName}
+                  </span>
+                  <button onClick={spotify.logout} className="playbar-logout">
+                    Disconnect
+                  </button>
+                </div>
+              </>
+            ) : !isAuthenticated ? (
+              /* Not logged in — show connect prompt + embed fallback */
+              <div className="playbar-connect">
+                <div className="playbar-connect-text">
+                  <h3 className="font-display text-[1.1rem] mb-2">Connect Spotify</h3>
+                  <p className="text-[#888] text-[0.85rem] mb-4">
+                    Connect your Spotify Premium account for full playback controls, or listen below with the embedded player.
+                  </p>
+                  <button onClick={spotify.login} className="btn btn-primary text-[0.8rem] py-2.5 px-6">
+                    Connect Spotify
+                  </button>
+                </div>
+                <div className="playbar-embed">
+                  <iframe
+                    src={ARTIST_EMBED}
+                    width="100%"
+                    height="352"
+                    frameBorder="0"
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy"
+                    style={{ borderRadius: "12px" }}
+                  />
+                </div>
+              </div>
+            ) : (
+              /* Authenticated but SDK loading */
+              <div className="playbar-connect">
+                <p className="text-[#888] text-[0.85rem]">
+                  Connecting to Spotify...
+                </p>
+              </div>
+            )}
           </div>
         )}
 
-        {/* Rasta accent line at bottom of bar */}
+        {/* Rasta accent line at bottom */}
         <div className="playbar-rasta" />
       </div>
     </>

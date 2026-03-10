@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Nav from "./components/Nav";
+import SpotifyProvider from "./components/SpotifyProvider";
 import SpotifyPlaybar from "./components/SpotifyPlaybar";
 import Script from "next/script";
 
@@ -45,7 +46,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </footer>
 
-        <SpotifyPlaybar />
+        <SpotifyProvider>
+          <SpotifyPlaybar />
+        </SpotifyProvider>
 
         <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_API_KEY"></div>
         <Script src="https://cdn.snipcart.com/themes/v3.7.1/default/snipcart.js" strategy="afterInteractive" />
