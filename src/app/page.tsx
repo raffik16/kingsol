@@ -61,20 +61,6 @@ export default function Home() {
             Love &bull; Truth &bull; Freedom
           </p>
 
-          {/* Spotify Player */}
-          <div className="w-full max-w-[660px] mb-10 rounded-xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
-            <iframe
-              style={{ borderRadius: "12px" }}
-              src="https://open.spotify.com/embed/artist/4iYxgancLoKojQUwbWkIGT?utm_source=generator&theme=0"
-              width="100%"
-              height="352"
-              frameBorder="0"
-              allowFullScreen
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              loading="lazy"
-            />
-          </div>
-
           {/* CTA Buttons */}
           <div className="flex gap-4 flex-wrap justify-center">
             <a href="#music" className="btn btn-primary">

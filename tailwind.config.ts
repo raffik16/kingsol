@@ -41,12 +41,26 @@ const config: Config = {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(100%)" },
         },
+        "spin-record": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+        "slide-up": {
+          "0%": { transform: "translateY(100%)" },
+          "100%": { transform: "translateY(0)" },
+        },
+        "eq-bar": {
+          "0%, 100%": { height: "3px" },
+          "50%": { height: "12px" },
+        },
       },
       animation: {
         "fade-in-up": "fade-in-up 0.8s ease forwards",
         "pulse-dot": "pulse-dot 2s infinite",
         "slide-in-right": "slide-in-right 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         "slide-out-right": "slide-out-right 0.3s ease-in forwards",
+        "spin-record": "spin-record 3s linear infinite",
+        "slide-up": "slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards",
       },
     },
   },
