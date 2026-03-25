@@ -332,6 +332,456 @@ body {
 }
 
 /* ═══════════════════════════════════════
+   SPOTIFY PLAYBAR
+   ═══════════════════════════════════════ */
+
+/* Floating action button */
+.playbar-fab {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  cursor: pointer;
+  z-index: 1998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.playbar-fab:hover {
+  border-color: var(--gold);
+  transform: scale(1.1);
+  box-shadow: 0 8px 30px rgba(245,166,35,0.2);
+}
+.playbar-fab-record {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #222 0%, #111 40%, #1a1a1a 60%, #111 100%);
+  position: relative;
+  animation: spin-record 3s linear infinite;
+}
+.playbar-fab-grooves {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.playbar-fab-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+/* Playbar container */
+.playbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1999;
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--card-border);
+  transform: translateY(100%);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.playbar-open {
+  transform: translateY(0);
+}
+.playbar-expanded {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Handle bar */
+.playbar-handle {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 4px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+}
+.playbar-handle:hover svg {
+  opacity: 0.7;
+}
+
+/* Main bar layout */
+.playbar-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 20px 14px;
+}
+
+/* ── Spinning vinyl record ── */
+.playbar-record-wrapper {
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.playbar-record {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%,
+    #333 0%,
+    #1a1a1a 20%,
+    #222 22%,
+    #181818 35%,
+    #222 37%,
+    #1a1a1a 50%,
+    #222 52%,
+    #181818 65%,
+    #222 67%,
+    #1a1a1a 80%,
+    #333 100%
+  );
+  position: relative;
+  box-shadow:
+    0 0 0 2px #0a0a0a,
+    0 4px 15px rgba(0,0,0,0.5);
+  transition: box-shadow 0.3s;
+}
+.playbar-spinning {
+  animation: spin-record 3s linear infinite;
+}
+.playbar-record-wrapper:hover .playbar-record {
+  box-shadow:
+    0 0 0 2px #0a0a0a,
+    0 0 20px rgba(245,166,35,0.15);
+}
+
+/* Grooves */
+.playbar-groove {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.playbar-groove-1 { inset: 8px; }
+.playbar-groove-2 { inset: 14px; }
+.playbar-groove-3 { inset: 20px; }
+
+/* Center label */
+.playbar-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--rasta-red), var(--gold), var(--rasta-green));
+  padding: 2px;
+}
+.playbar-label-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.playbar-label-text {
+  font-size: 5px;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: 0.5px;
+}
+
+/* Shine */
+.playbar-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%, rgba(255,255,255,0.03) 100%);
+  pointer-events: none;
+}
+
+/* ── Track info ── */
+.playbar-info {
+  flex: 1;
+  min-width: 0;
+}
+.playbar-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text);
+}
+.playbar-artist {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Controls ── */
+.playbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.playbar-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.playbar-btn:hover {
+  color: var(--gold);
+  background: rgba(245,166,35,0.1);
+}
+.playbar-btn-play {
+  width: 46px;
+  height: 46px;
+  background: var(--gold);
+  color: var(--dark);
+}
+.playbar-btn-play:hover {
+  background: var(--gold-dark);
+  color: var(--dark);
+  transform: scale(1.05);
+}
+
+/* Progress bar */
+.playbar-progress {
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  cursor: pointer;
+  position: relative;
+}
+.playbar-progress:hover {
+  height: 5px;
+}
+.playbar-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--rasta-green), var(--gold));
+  border-radius: 0 2px 2px 0;
+  transition: width 0.3s linear;
+}
+
+/* Album art inside record */
+.playbar-record-art {
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* Status dot */
+.playbar-status {
+  flex-shrink: 0;
+}
+.playbar-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: background 0.3s;
+}
+.playbar-status-connected {
+  background: var(--rasta-green);
+  box-shadow: 0 0 8px rgba(45,155,66,0.5);
+}
+
+/* Time display */
+.playbar-time {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* FAB paused state */
+.playbar-fab-paused {
+  animation: none !important;
+}
+
+/* ── Expanded content ── */
+.playbar-expanded-content {
+  padding: 8px 20px 16px;
+  border-top: 1px solid var(--card-border);
+}
+.playbar-embed {
+  margin-bottom: 12px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Track list */
+.playbar-tracklist {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+.playbar-track-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  width: 100%;
+}
+.playbar-track-item:hover {
+  background: rgba(255,255,255,0.04);
+}
+.playbar-track-active {
+  background: rgba(245,166,35,0.08);
+}
+.playbar-track-num {
+  font-size: 0.75rem;
+  font-weight: 600;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.playbar-track-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.playbar-track-active .playbar-track-title {
+  color: var(--gold);
+}
+.playbar-track-art {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.playbar-track-subtitle {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+.playbar-tracklist-header {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 8px 12px 4px;
+}
+
+/* Now playing expanded */
+.playbar-now-playing {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  margin-bottom: 8px;
+}
+.playbar-album-art {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.playbar-np-title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+.playbar-np-artist {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Connect prompt */
+.playbar-connect {
+  padding: 16px 0;
+  text-align: center;
+}
+.playbar-connect-text {
+  margin-bottom: 16px;
+}
+
+/* Footer */
+.playbar-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  margin-top: 8px;
+  border-top: 1px solid var(--card-border);
+}
+.playbar-logout {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+.playbar-logout:hover {
+  color: var(--rasta-red);
+  background: rgba(228,49,43,0.1);
+}
+
+/* EQ animation bars */
+.playbar-eq {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+.playbar-eq span {
+  width: 3px;
+  background: var(--gold);
+  border-radius: 1px;
+  animation: eq-bar 0.8s ease-in-out infinite;
+}
+.playbar-eq span:nth-child(1) { animation-delay: 0s; height: 8px; }
+.playbar-eq span:nth-child(2) { animation-delay: 0.2s; height: 12px; }
+.playbar-eq span:nth-child(3) { animation-delay: 0.4s; height: 6px; }
+
+@keyframes eq-bar {
+  0%, 100% { height: 3px; }
+  50% { height: 12px; }
+}
+
+/* Rasta accent at bottom */
+.playbar-rasta {
+  height: 2px;
+  background: linear-gradient(90deg, var(--rasta-red), var(--rasta-yellow), var(--rasta-green));
+}
+
+/* ═══════════════════════════════════════
    MOBILE RESPONSIVE
    ═══════════════════════════════════════ */
 @media (max-width: 900px) {
@@ -345,4 +795,23 @@ body {
   .ig-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+  .playbar-main {
+    gap: 10px;
+    padding: 6px 14px 12px;
+  }
+  .playbar-record {
+    width: 42px;
+    height: 42px;
+  }
+  .playbar-groove-1 { inset: 6px; }
+  .playbar-groove-2 { inset: 11px; }
+  .playbar-groove-3 { inset: 16px; }
+  .playbar-label {
+    width: 14px;
+    height: 14px;
+  }
+  .playbar-label-text { font-size: 4px; }
+  .playbar-counter { display: none; }
+  .playbar-btn { width: 36px; height: 36px; }
+  .playbar-btn-play { width: 42px; height: 42px; }
 }
