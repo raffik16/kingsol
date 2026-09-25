@@ -21,7 +21,7 @@ const releases: Release[] = [
 const releaseTypes = { album: "AlbumRelease", single: "SingleRelease", ep: "EPRelease" } as const;
 
 // schema.org data so search engines can tie this page to the band and its releases.
-const jsonLd = {
+const bandJsonLd = {
   "@context": "https://schema.org",
   "@type": "MusicGroup",
   name: "King Sol & The Vibes",
@@ -38,23 +38,57 @@ const jsonLd = {
   })),
 };
 
+// Start times carry their UTC offset (-07:00 is Pacific Daylight Time, -08:00 Standard).
 const shows = [
   {
-    weekday: "FRI",
-    month: "OCT",
-    day: "23",
+    start: "2026-10-23T20:30:00-07:00",
     venue: "The Pike Restaurant & Bar",
-    address: "1836 E 4th St, Long Beach, CA 90802",
-    details: "8:30 PM \u2022 Free show",
+    address: { street: "1836 E 4th St", city: "Long Beach", region: "CA", postalCode: "90802" },
+    free: true,
   },
 ];
+
+// Format in Los Angeles time so the build machine's timezone can't shift the date or time.
+const showDate = (iso: string, options: Intl.DateTimeFormatOptions) =>
+  new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles", ...options }).format(new Date(iso));
+
+// schema.org events make shows eligible for Google's event listings in search.
+const showsJsonLd = shows.map((show) => ({
+  "@context": "https://schema.org",
+  "@type": "MusicEvent",
+  name: `King Sol & The Vibes at ${show.venue}`,
+  startDate: show.start,
+  eventStatus: "https://schema.org/EventScheduled",
+  eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+  location: {
+    "@type": "Place",
+    name: show.venue,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: show.address.street,
+      addressLocality: show.address.city,
+      addressRegion: show.address.region,
+      postalCode: show.address.postalCode,
+      addressCountry: "US",
+    },
+  },
+  performer: { "@type": "MusicGroup", name: "King Sol & The Vibes" },
+  ...(show.free
+    ? {
+        isAccessibleForFree: true,
+        offers: { "@type": "Offer", price: 0, priceCurrency: "USD", availability: "https://schema.org/InStock" },
+      }
+    : {}),
+}));
 
 export default function Home() {
   return (
     <ToastProvider>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([bandJsonLd, ...showsJsonLd]).replace(/</g, "\\u003c"),
+        }}
       />
 
       {/* ═══════════════════ HERO ═══════════════════ */}
@@ -198,17 +232,27 @@ export default function Home() {
 
           <div className="flex flex-col gap-0.5 mt-12">
             {shows.map((show) => (
-              <FadeIn key={show.day + show.venue}>
+              <FadeIn key={show.start + show.venue}>
                 <div className="show-item">
                   <div className="text-center">
-                    <div className="text-[0.7rem] font-semibold tracking-[2px] uppercase text-sol-gold">{show.month}</div>
-                    <div className="font-display text-[2rem] leading-none">{show.day}</div>
-                    <div className="text-[0.7rem] font-semibold tracking-[2px] uppercase text-[#888] mt-1">{show.weekday}</div>
+                    <div className="text-[0.7rem] font-semibold tracking-[2px] uppercase text-sol-gold">
+                      {showDate(show.start, { month: "short" })}
+                    </div>
+                    <div className="font-display text-[2rem] leading-none">{showDate(show.start, { day: "2-digit" })}</div>
+                    <div className="text-[0.7rem] font-semibold tracking-[2px] uppercase text-[#888] mt-1">
+                      {showDate(show.start, { weekday: "short" })}
+                    </div>
                   </div>
                   <div>
                     <div className="font-semibold text-[1.05rem]">{show.venue}</div>
-                    <div className="text-[0.85rem] text-[#888] mt-0.5">{show.address}</div>
-                    <div className="text-[0.85rem] font-semibold text-sol-gold mt-1">{show.details}</div>
+                    <div className="text-[0.85rem] text-[#888] mt-0.5">
+                      {show.address.street}, {show.address.city}, {show.address.region} {show.address.postalCode}
+                    </div>
+                    <div className="text-[0.85rem] font-semibold text-sol-gold mt-1">
+                      {[showDate(show.start, { hour: "numeric", minute: "2-digit" }), show.free && "Free show"]
+                        .filter(Boolean)
+                        .join(" \u2022 ")}
+                    </div>
                   </div>
                 </div>
               </FadeIn>
