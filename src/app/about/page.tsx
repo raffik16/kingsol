@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { baseOpenGraph } from "../site";
 import FadeIn from "../components/FadeIn";
 
 const members = [
@@ -32,6 +34,16 @@ const members = [
     colors: ["#F5A623", "#E4312B"],
   },
 ];
+
+const description =
+  "Meet King Sol & The Vibes, a high-energy Latin Reggae Rock band from Los Angeles fusing reggae, rock, and Latin rhythms.";
+
+export const metadata: Metadata = {
+  title: "About the Band",
+  description,
+  alternates: { canonical: "/about" },
+  openGraph: { ...baseOpenGraph, title: "About the Band", description, url: "/about" },
+};
 
 export default function About() {
   return (

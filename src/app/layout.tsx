@@ -1,11 +1,25 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Nav from "./components/Nav";
+import { baseOpenGraph, siteUrl } from "./site";
+
+const description =
+  "King Sol & The Vibes — High energy Latin Reggae Rock from Los Angeles. Love, Truth, Freedom.";
 
 export const metadata: Metadata = {
-  title: "King Sol & The Vibes | Latin Reggae Rock from Los Angeles",
-  description:
-    "King Sol & The Vibes — High energy Latin Reggae Rock from Los Angeles. Love, Truth, Freedom.",
+  metadataBase: siteUrl,
+  title: {
+    default: "King Sol & The Vibes | Latin Reggae Rock from Los Angeles",
+    template: "%s | King Sol & The Vibes",
+  },
+  description,
+  alternates: { canonical: "/" },
+  openGraph: {
+    ...baseOpenGraph,
+    url: "/",
+    description,
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -18,6 +32,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap"
           rel="stylesheet"
         />
+        {/* FadeIn content starts hidden until JS reveals it; show it outright without JS. */}
+        <noscript>
+          <style>{`.fade-in { opacity: 1 !important; transform: none !important; }`}</style>
+        </noscript>
       </head>
       <body className="font-body bg-sol-dark text-[#f0f0f0] min-h-screen">
         {/* Rasta top bar */}
