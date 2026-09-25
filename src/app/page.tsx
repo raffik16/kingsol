@@ -1,5 +1,4 @@
 import FadeIn from "./components/FadeIn";
-import ShopSection from "./components/ShopSection";
 import ContactSection from "./components/ContactSection";
 import { ToastProvider } from "./components/Toast";
 
@@ -273,11 +272,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      <div className="rasta-divider" />
-
-      {/* ═══════════════════ SHOP ═══════════════════ */}
-      <ShopSection />
 
       <div className="rasta-divider" />
 

@@ -2,6 +2,7 @@
 
 import { type FormEvent } from "react";
 import FadeIn from "./FadeIn";
+import SocialLinks from "./SocialLinks";
 import { useToast } from "./Toast";
 
 export default function ContactSection() {
@@ -60,14 +61,7 @@ export default function ContactSection() {
 
               <div className="mt-2">
                 <div className="text-[0.75rem] font-semibold tracking-[1.5px] uppercase text-[#888] mb-3">Follow Us</div>
-                <div className="flex gap-3">
-                  <a href="https://www.instagram.com/king_vibes_official/" target="_blank" rel="noopener" className="social-link" title="Instagram">&#x1F4F7;</a>
-                  <a href="https://www.facebook.com/kingsolmusic/" target="_blank" rel="noopener" className="social-link" title="Facebook">&#x1F310;</a>
-                  <a href="https://open.spotify.com/artist/4iYxgancLoKojQUwbWkIGT" target="_blank" rel="noopener" className="social-link" title="Spotify">&#x1F3B5;</a>
-                  <a href="https://soundcloud.com/kingsolvibes" target="_blank" rel="noopener" className="social-link" title="SoundCloud">&#x2601;&#xFE0F;</a>
-                  <a href="https://music.apple.com/us/artist/king-sol-the-vibes/1136472387" target="_blank" rel="noopener" className="social-link" title="Apple Music">&#x1F34E;</a>
-                  <a href="https://www.tiktok.com/@kingsolvibes" target="_blank" rel="noopener" className="social-link" title="TikTok">&#x1F3AC;</a>
-                </div>
+                <SocialLinks />
               </div>
             </div>
           </FadeIn>
