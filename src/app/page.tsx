@@ -3,14 +3,14 @@ import ContactSection from "./components/ContactSection";
 import { ToastProvider } from "./components/Toast";
 
 const releases = [
-  { title: "Three Worlds", year: "2023", type: "album", emoji: "\u{1F3B6}" },
-  { title: "Mass Shooting", year: "2023", type: "single", emoji: "\u{1F525}" },
-  { title: "Broken History", year: "2021", type: "single", emoji: "\u{1F4A5}" },
-  { title: "Corona Panic", year: "2021", type: "single", emoji: "\u{1F30D}" },
-  { title: "Ooh Baby", year: "2021", type: "single", emoji: "\u2764\uFE0F" },
-  { title: "We Will Rise EP", year: "2020", type: "ep", emoji: "\u270A" },
-  { title: "Political Brother", year: "2020", type: "single", emoji: "\u{1F3F4}" },
-  { title: "Reggae Blues", year: "2018", type: "single", emoji: "\u{1F3B5}" },
+  { title: "Three Worlds", year: "2023", type: "album", spotifyId: "6OGLYQmslVZqEll8tJ2CUe" },
+  { title: "Mass Shooting", year: "2023", type: "single", spotifyId: "7lP5kjR95aolNdOqQAFmdn" },
+  { title: "Broken History", year: "2021", type: "single", spotifyId: "0YSzWUhJMvBs3cREbUIcDw" },
+  { title: "Corona Panic", year: "2021", type: "single", spotifyId: "3h3akaefagUFT17JtdmoNG" },
+  { title: "Ooh Baby", year: "2021", type: "single", spotifyId: "22Wzgk4Gwsxry6EPby4IMO" },
+  { title: "We Will Rise EP", year: "2020", type: "ep", spotifyId: "3uAKjmkuCzXDClELGzFosN" },
+  { title: "Political Brother", year: "2020", type: "single", spotifyId: "1kgUOgPEA7LlbIQDcrGDwj" },
+  { title: "Reggae Blues", year: "2018", type: "single", spotifyId: "4FQJsefH4y315GhJ6zekcv" },
 ];
 
 const shows = [
@@ -160,18 +160,24 @@ export default function Home() {
           <FadeIn><h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] leading-tight mb-5">Our Music</h2></FadeIn>
           <FadeIn><p className="text-[1.05rem] text-[#888] max-w-[600px] leading-relaxed">Stream our latest tracks and albums on every major platform.</p></FadeIn>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
             {releases.map((r) => (
               <FadeIn key={r.title}>
-                <div className="bg-sol-card border border-sol-border rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-sol-gold/30 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
-                  <div className="aspect-square bg-gradient-to-br from-[#1a1a1a] to-[#0d0d0d] flex items-center justify-center text-5xl relative group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-rasta-red/15 via-rasta-yellow/10 to-rasta-green/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <span className="relative z-10">{r.emoji}</span>
-                  </div>
-                  <div className="p-4">
-                    <div className="font-semibold text-[0.95rem] mb-1">{r.title}</div>
-                    <div className="text-[0.8rem] text-[#888]">{r.year}</div>
-                    <span className={`release-type ${r.type}`}>{r.type}</span>
+                <div className="bg-sol-card border border-sol-border rounded-xl p-3 transition-all duration-300 hover:border-sol-gold/30 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
+                  <iframe
+                    title={`${r.title} on Spotify`}
+                    className="block"
+                    style={{ borderRadius: "12px" }}
+                    src={`https://open.spotify.com/embed/album/${r.spotifyId}?utm_source=generator&theme=0`}
+                    width="100%"
+                    height="152"
+                    frameBorder="0"
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy"
+                  />
+                  <div className="flex items-center gap-3 px-1 pt-3">
+                    <span className={`release-type ${r.type} !mt-0`}>{r.type}</span>
+                    <span className="text-[0.8rem] text-[#888]">{r.year}</span>
                   </div>
                 </div>
               </FadeIn>
