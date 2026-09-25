@@ -32,8 +32,8 @@ export default function ContactSection() {
                 <div>
                   <div className="text-[0.75rem] font-semibold tracking-[1.5px] uppercase text-[#888] mb-1">Email</div>
                   <div className="font-medium">
-                    <a href="mailto:kingsolvibes@gmail.com" className="text-sol-gold hover:opacity-80 transition-opacity">
-                      kingsolvibes@gmail.com
+                    <a href="mailto:kingsol420@gmail.com" className="text-sol-gold hover:opacity-80 transition-opacity">
+                      kingsol420@gmail.com
                     </a>
                   </div>
                 </div>

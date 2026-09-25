@@ -15,10 +15,14 @@ const releases = [
 ];
 
 const shows = [
-  { month: "MAR", day: "15", venue: "The Pike Restaurant & Bar", location: "Long Beach, CA \u2022 4-7 PM" },
-  { month: "MAR", day: "22", venue: "Reggae Sunday @ Rock & Roll Pizza", location: "Los Angeles, CA \u2022 3-9 PM" },
-  { month: "APR", day: "05", venue: "DiPiazza's", location: "Long Beach, CA \u2022 8 PM" },
-  { month: "APR", day: "19", venue: "Malibu Music Second Saturdays", location: "Malibu, CA \u2022 6 PM" },
+  {
+    weekday: "FRI",
+    month: "OCT",
+    day: "23",
+    venue: "The Pike Restaurant & Bar",
+    address: "1836 E 4th St, Long Beach, CA 90802",
+    details: "8:30 PM \u2022 Free show",
+  },
 ];
 
 export default function Home() {
@@ -192,10 +196,12 @@ export default function Home() {
                   <div className="text-center">
                     <div className="text-[0.7rem] font-semibold tracking-[2px] uppercase text-sol-gold">{show.month}</div>
                     <div className="font-display text-[2rem] leading-none">{show.day}</div>
+                    <div className="text-[0.7rem] font-semibold tracking-[2px] uppercase text-[#888] mt-1">{show.weekday}</div>
                   </div>
                   <div>
                     <div className="font-semibold text-[1.05rem]">{show.venue}</div>
-                    <div className="text-[0.85rem] text-[#888] mt-0.5">{show.location}</div>
+                    <div className="text-[0.85rem] text-[#888] mt-0.5">{show.address}</div>
+                    <div className="text-[0.85rem] font-semibold text-sol-gold mt-1">{show.details}</div>
                   </div>
                 </div>
               </FadeIn>
