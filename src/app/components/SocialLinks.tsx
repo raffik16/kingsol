@@ -1,5 +1,5 @@
 // Brand icon paths from Simple Icons (https://simpleicons.org, CC0 1.0).
-const socials = [
+export const socials = [
   {
     label: "Instagram",
     href: "https://www.instagram.com/king_vibes_official/",

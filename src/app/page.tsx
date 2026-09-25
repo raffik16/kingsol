@@ -1,9 +1,11 @@
 import FadeIn from "./components/FadeIn";
 import ContactSection from "./components/ContactSection";
 import InstagramFeed from "./components/InstagramFeed";
+import ReleaseGrid, { type Release } from "./components/ReleaseGrid";
+import { socials } from "./components/SocialLinks";
 import { ToastProvider } from "./components/Toast";
 
-const releases = [
+const releases: Release[] = [
   { title: "\u00A1Que Se Vaya ICE!", year: "2025", type: "single", spotifyId: "0tXM2mSzWHF6OPe7LgD83R" },
   { title: "Good Thing", year: "2025", type: "single", spotifyId: "0gDhp3vackt0nXE7mr1B7x" },
   { title: "Three Worlds", year: "2023", type: "album", spotifyId: "6OGLYQmslVZqEll8tJ2CUe" },
@@ -11,10 +13,30 @@ const releases = [
   { title: "Broken History", year: "2021", type: "single", spotifyId: "0YSzWUhJMvBs3cREbUIcDw" },
   { title: "Corona Panic", year: "2021", type: "single", spotifyId: "3h3akaefagUFT17JtdmoNG" },
   { title: "Ooh Baby", year: "2021", type: "single", spotifyId: "22Wzgk4Gwsxry6EPby4IMO" },
-  { title: "We Will Rise EP", year: "2020", type: "ep", spotifyId: "3uAKjmkuCzXDClELGzFosN" },
+  { title: "We Will Rise", year: "2020", type: "ep", spotifyId: "3uAKjmkuCzXDClELGzFosN" },
   { title: "Political Brother", year: "2020", type: "single", spotifyId: "1kgUOgPEA7LlbIQDcrGDwj" },
   { title: "Reggae Blues", year: "2018", type: "single", spotifyId: "4FQJsefH4y315GhJ6zekcv" },
 ];
+
+const releaseTypes = { album: "AlbumRelease", single: "SingleRelease", ep: "EPRelease" } as const;
+
+// schema.org data so search engines can tie this page to the band and its releases.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "MusicGroup",
+  name: "King Sol & The Vibes",
+  genre: "Latin Reggae Rock",
+  foundingDate: "2018",
+  foundingLocation: { "@type": "Place", name: "Los Angeles, CA" },
+  sameAs: socials.map((s) => s.href),
+  album: releases.map((r) => ({
+    "@type": "MusicAlbum",
+    name: r.title,
+    datePublished: r.year,
+    albumReleaseType: `https://schema.org/${releaseTypes[r.type]}`,
+    url: `https://open.spotify.com/album/${r.spotifyId}`,
+  })),
+};
 
 const shows = [
   {
@@ -30,6 +52,11 @@ const shows = [
 export default function Home() {
   return (
     <ToastProvider>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      />
+
       {/* ═══════════════════ HERO ═══════════════════ */}
       <section
         id="hero"
@@ -156,29 +183,7 @@ export default function Home() {
           <FadeIn><h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] leading-tight mb-5">Our Music</h2></FadeIn>
           <FadeIn><p className="text-[1.05rem] text-[#888] max-w-[600px] leading-relaxed">Stream our latest tracks and albums on every major platform.</p></FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
-            {releases.map((r) => (
-              <FadeIn key={r.title}>
-                <div className="bg-sol-card border border-sol-border rounded-xl p-3 transition-all duration-300 hover:border-sol-gold/30 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
-                  <iframe
-                    title={`${r.title} on Spotify`}
-                    className="block"
-                    style={{ borderRadius: "12px" }}
-                    src={`https://open.spotify.com/embed/album/${r.spotifyId}?utm_source=generator&theme=0`}
-                    width="100%"
-                    height="152"
-                    frameBorder="0"
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                    loading="lazy"
-                  />
-                  <div className="flex items-center gap-3 px-1 pt-3">
-                    <span className={`release-type ${r.type} !mt-0`}>{r.type}</span>
-                    <span className="text-[0.8rem] text-[#888]">{r.year}</span>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
+          <ReleaseGrid releases={releases} />
         </div>
       </section>
 
