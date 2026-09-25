@@ -6,7 +6,7 @@ import { socials } from "./components/SocialLinks";
 import { ToastProvider } from "./components/Toast";
 
 const releases: Release[] = [
-  { title: "\u00A1Que Se Vaya ICE!", year: "2025", type: "single", spotifyId: "0tXM2mSzWHF6OPe7LgD83R" },
+  { title: "\u00A1Que Se Vaya ICE!", year: "2026", type: "single", spotifyId: "0tXM2mSzWHF6OPe7LgD83R" },
   { title: "Good Thing", year: "2025", type: "single", spotifyId: "0gDhp3vackt0nXE7mr1B7x" },
   { title: "Three Worlds", year: "2023", type: "album", spotifyId: "6OGLYQmslVZqEll8tJ2CUe" },
   { title: "Mass Shooting", year: "2023", type: "single", spotifyId: "7lP5kjR95aolNdOqQAFmdn" },
