@@ -157,7 +157,7 @@ body {
    ═══════════════════════════════════════ */
 .show-item {
   display: grid;
-  grid-template-columns: 120px 1fr auto;
+  grid-template-columns: 120px 1fr;
   gap: 24px;
   align-items: center;
   padding: 24px;
@@ -168,87 +168,6 @@ body {
 .show-item:hover {
   background: #151515;
   transform: translateX(4px);
-}
-
-/* ═══════════════════════════════════════
-   INSTAGRAM GRID
-   ═══════════════════════════════════════ */
-.ig-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
-  border-radius: 12px;
-  overflow: hidden;
-}
-.ig-item {
-  aspect-ratio: 1;
-  position: relative;
-  overflow: hidden;
-}
-.ig-item .ig-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.ig-item:hover .ig-overlay {
-  opacity: 1;
-}
-
-/* ═══════════════════════════════════════
-   PRODUCT CARDS
-   ═══════════════════════════════════════ */
-.product-badge {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  padding: 4px 12px;
-  border-radius: 50px;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  background: var(--rasta-green);
-  color: #fff;
-}
-
-/* ═══════════════════════════════════════
-   CART DRAWER
-   ═══════════════════════════════════════ */
-.cart-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  z-index: 2000;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s;
-}
-.cart-overlay.open {
-  opacity: 1;
-  visibility: visible;
-}
-.cart-drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 420px;
-  max-width: 100%;
-  background: #0d0d0d;
-  z-index: 2001;
-  transform: translateX(100%);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex;
-  flex-direction: column;
-  border-left: 1px solid var(--card-border);
-}
-.cart-drawer.open {
-  transform: translateX(0);
 }
 
 /* ═══════════════════════════════════════
@@ -305,10 +224,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  color: var(--text-muted);
   transition: all 0.3s;
 }
 .social-link:hover {
+  color: var(--gold);
   border-color: var(--gold);
   background: rgba(245,166,35,0.1);
   transform: translateY(-2px);
@@ -338,11 +258,5 @@ body {
   .show-item {
     grid-template-columns: 80px 1fr;
     gap: 16px;
-  }
-  .show-item .show-btn-cell {
-    display: none;
-  }
-  .ig-grid {
-    grid-template-columns: repeat(2, 1fr);
   }
 }

@@ -9,7 +9,6 @@ const navLinks = [
   { href: "/#about", label: "About" },
   { href: "/#music", label: "Music" },
   { href: "/#shows", label: "Shows" },
-  { href: "/#shop", label: "Shop" },
   { href: "/#contact", label: "Contact" },
 ];
 
@@ -86,41 +85,28 @@ export default function Nav() {
           })}
         </ul>
 
-        {/* Right side: cart + hamburger */}
-        <div className="flex items-center gap-3">
-          <button
-            className="snipcart-checkout relative text-[#f0f0f0] text-[1.2rem] p-2 hover:text-sol-gold transition-colors"
-            aria-label="Open Cart"
-          >
-            &#x1F6D2;
-            <span className="snipcart-items-count absolute top-0 right-0 bg-rasta-red text-white text-[0.65rem] font-bold w-[18px] h-[18px] rounded-full flex items-center justify-center">
-              0
-            </span>
-          </button>
-
-          {/* Hamburger */}
-          <button
-            className="md:hidden flex flex-col gap-[5px] p-2"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Menu"
-          >
-            <span
-              className={`w-6 h-[2px] bg-[#f0f0f0] transition-all duration-300 ${
-                menuOpen ? "rotate-45 translate-y-[7px]" : ""
-              }`}
-            />
-            <span
-              className={`w-6 h-[2px] bg-[#f0f0f0] transition-all duration-300 ${
-                menuOpen ? "opacity-0" : ""
-              }`}
-            />
-            <span
-              className={`w-6 h-[2px] bg-[#f0f0f0] transition-all duration-300 ${
-                menuOpen ? "-rotate-45 -translate-y-[7px]" : ""
-              }`}
-            />
-          </button>
-        </div>
+        {/* Hamburger */}
+        <button
+          className="md:hidden flex flex-col gap-[5px] p-2"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Menu"
+        >
+          <span
+            className={`w-6 h-[2px] bg-[#f0f0f0] transition-all duration-300 ${
+              menuOpen ? "rotate-45 translate-y-[7px]" : ""
+            }`}
+          />
+          <span
+            className={`w-6 h-[2px] bg-[#f0f0f0] transition-all duration-300 ${
+              menuOpen ? "opacity-0" : ""
+            }`}
+          />
+          <span
+            className={`w-6 h-[2px] bg-[#f0f0f0] transition-all duration-300 ${
+              menuOpen ? "-rotate-45 -translate-y-[7px]" : ""
+            }`}
+          />
+        </button>
       </div>
 
       {/* Mobile Menu */}

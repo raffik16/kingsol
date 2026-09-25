@@ -1,40 +1,96 @@
 import FadeIn from "./components/FadeIn";
-import ShopSection from "./components/ShopSection";
 import ContactSection from "./components/ContactSection";
+import InstagramFeed from "./components/InstagramFeed";
+import ReleaseGrid, { type Release } from "./components/ReleaseGrid";
+import { socials } from "./components/SocialLinks";
 import { ToastProvider } from "./components/Toast";
 
-const releases = [
-  { title: "Three Worlds", year: "2023", type: "album", emoji: "\u{1F3B6}" },
-  { title: "Mass Shooting", year: "2023", type: "single", emoji: "\u{1F525}" },
-  { title: "Broken History", year: "2021", type: "single", emoji: "\u{1F4A5}" },
-  { title: "Corona Panic", year: "2021", type: "single", emoji: "\u{1F30D}" },
-  { title: "Ooh Baby", year: "2021", type: "single", emoji: "\u2764\uFE0F" },
-  { title: "We Will Rise EP", year: "2020", type: "ep", emoji: "\u270A" },
-  { title: "Political Brother", year: "2020", type: "single", emoji: "\u{1F3F4}" },
-  { title: "Reggae Blues", year: "2018", type: "single", emoji: "\u{1F3B5}" },
+const releases: Release[] = [
+  { title: "\u00A1Que Se Vaya ICE!", year: "2026", type: "single", spotifyId: "0tXM2mSzWHF6OPe7LgD83R" },
+  { title: "Good Thing", year: "2025", type: "single", spotifyId: "0gDhp3vackt0nXE7mr1B7x" },
+  { title: "Three Worlds", year: "2023", type: "album", spotifyId: "6OGLYQmslVZqEll8tJ2CUe" },
+  { title: "Mass Shooting", year: "2023", type: "single", spotifyId: "7lP5kjR95aolNdOqQAFmdn" },
+  { title: "Broken History", year: "2021", type: "single", spotifyId: "0YSzWUhJMvBs3cREbUIcDw" },
+  { title: "Corona Panic", year: "2021", type: "single", spotifyId: "3h3akaefagUFT17JtdmoNG" },
+  { title: "Ooh Baby", year: "2021", type: "single", spotifyId: "22Wzgk4Gwsxry6EPby4IMO" },
+  { title: "We Will Rise", year: "2020", type: "ep", spotifyId: "3uAKjmkuCzXDClELGzFosN" },
+  { title: "Political Brother", year: "2020", type: "single", spotifyId: "1kgUOgPEA7LlbIQDcrGDwj" },
+  { title: "Reggae Blues", year: "2018", type: "single", spotifyId: "4FQJsefH4y315GhJ6zekcv" },
 ];
 
+const releaseTypes = { album: "AlbumRelease", single: "SingleRelease", ep: "EPRelease" } as const;
+
+// schema.org data so search engines can tie this page to the band and its releases.
+const bandJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "MusicGroup",
+  name: "King Sol & The Vibes",
+  genre: "Latin Reggae Rock",
+  foundingDate: "2018",
+  foundingLocation: { "@type": "Place", name: "Los Angeles, CA" },
+  sameAs: socials.map((s) => s.href),
+  album: releases.map((r) => ({
+    "@type": "MusicAlbum",
+    name: r.title,
+    datePublished: r.year,
+    albumReleaseType: `https://schema.org/${releaseTypes[r.type]}`,
+    url: `https://open.spotify.com/album/${r.spotifyId}`,
+  })),
+};
+
+// Start times carry their UTC offset (-07:00 is Pacific Daylight Time, -08:00 Standard).
 const shows = [
-  { month: "MAR", day: "15", venue: "The Pike Restaurant & Bar", location: "Long Beach, CA \u2022 4-7 PM" },
-  { month: "MAR", day: "22", venue: "Reggae Sunday @ Rock & Roll Pizza", location: "Los Angeles, CA \u2022 3-9 PM" },
-  { month: "APR", day: "05", venue: "DiPiazza's", location: "Long Beach, CA \u2022 8 PM" },
-  { month: "APR", day: "19", venue: "Malibu Music Second Saturdays", location: "Malibu, CA \u2022 6 PM" },
+  {
+    start: "2026-10-23T20:30:00-07:00",
+    venue: "The Pike Restaurant & Bar",
+    address: { street: "1836 E 4th St", city: "Long Beach", region: "CA", postalCode: "90802" },
+    free: true,
+  },
 ];
 
-const igItems = [
-  { emoji: "\u{1F3B6}", gradient: "from-[#E4312B33] to-[#F8D12F22]" },
-  { emoji: "\u{1F3A4}", gradient: "from-[#2D9B4233] to-[#F5A62322]" },
-  { emoji: "\u{1F525}", gradient: "from-[#F5A62333] to-[#E4312B22]" },
-  { emoji: "\u{1F3B5}", gradient: "from-[#F8D12F33] to-[#2D9B4222]" },
-  { emoji: "\u270A", gradient: "from-[#2D9B4233] to-[#E4312B22]" },
-  { emoji: "\u{1F451}", gradient: "from-[#E4312B33] to-[#2D9B4222]" },
-  { emoji: "\u2600\uFE0F", gradient: "from-[#F5A62333] to-[#F8D12F22]" },
-  { emoji: "\u{1F30A}", gradient: "from-[#F8D12F33] to-[#E4312B22]" },
-];
+// Format in Los Angeles time so the build machine's timezone can't shift the date or time.
+const showDate = (iso: string, options: Intl.DateTimeFormatOptions) =>
+  new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles", ...options }).format(new Date(iso));
+
+// schema.org events make shows eligible for Google's event listings in search.
+const showsJsonLd = shows.map((show) => ({
+  "@context": "https://schema.org",
+  "@type": "MusicEvent",
+  name: `King Sol & The Vibes at ${show.venue}`,
+  startDate: show.start,
+  eventStatus: "https://schema.org/EventScheduled",
+  eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+  location: {
+    "@type": "Place",
+    name: show.venue,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: show.address.street,
+      addressLocality: show.address.city,
+      addressRegion: show.address.region,
+      postalCode: show.address.postalCode,
+      addressCountry: "US",
+    },
+  },
+  performer: { "@type": "MusicGroup", name: "King Sol & The Vibes" },
+  ...(show.free
+    ? {
+        isAccessibleForFree: true,
+        offers: { "@type": "Offer", price: 0, priceCurrency: "USD", availability: "https://schema.org/InStock" },
+      }
+    : {}),
+}));
 
 export default function Home() {
   return (
     <ToastProvider>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([bandJsonLd, ...showsJsonLd]).replace(/</g, "\\u003c"),
+        }}
+      />
+
       {/* ═══════════════════ HERO ═══════════════════ */}
       <section
         id="hero"
@@ -161,23 +217,7 @@ export default function Home() {
           <FadeIn><h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] leading-tight mb-5">Our Music</h2></FadeIn>
           <FadeIn><p className="text-[1.05rem] text-[#888] max-w-[600px] leading-relaxed">Stream our latest tracks and albums on every major platform.</p></FadeIn>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mt-12">
-            {releases.map((r) => (
-              <FadeIn key={r.title}>
-                <div className="bg-sol-card border border-sol-border rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-sol-gold/30 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
-                  <div className="aspect-square bg-gradient-to-br from-[#1a1a1a] to-[#0d0d0d] flex items-center justify-center text-5xl relative group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-rasta-red/15 via-rasta-yellow/10 to-rasta-green/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <span className="relative z-10">{r.emoji}</span>
-                  </div>
-                  <div className="p-4">
-                    <div className="font-semibold text-[0.95rem] mb-1">{r.title}</div>
-                    <div className="text-[0.8rem] text-[#888]">{r.year}</div>
-                    <span className={`release-type ${r.type}`}>{r.type}</span>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
+          <ReleaseGrid releases={releases} />
         </div>
       </section>
 
@@ -192,23 +232,27 @@ export default function Home() {
 
           <div className="flex flex-col gap-0.5 mt-12">
             {shows.map((show) => (
-              <FadeIn key={show.day + show.venue}>
+              <FadeIn key={show.start + show.venue}>
                 <div className="show-item">
                   <div className="text-center">
-                    <div className="text-[0.7rem] font-semibold tracking-[2px] uppercase text-sol-gold">{show.month}</div>
-                    <div className="font-display text-[2rem] leading-none">{show.day}</div>
+                    <div className="text-[0.7rem] font-semibold tracking-[2px] uppercase text-sol-gold">
+                      {showDate(show.start, { month: "short" })}
+                    </div>
+                    <div className="font-display text-[2rem] leading-none">{showDate(show.start, { day: "2-digit" })}</div>
+                    <div className="text-[0.7rem] font-semibold tracking-[2px] uppercase text-[#888] mt-1">
+                      {showDate(show.start, { weekday: "short" })}
+                    </div>
                   </div>
                   <div>
                     <div className="font-semibold text-[1.05rem]">{show.venue}</div>
-                    <div className="text-[0.85rem] text-[#888] mt-0.5">{show.location}</div>
-                  </div>
-                  <div className="show-btn-cell">
-                    <a
-                      href="#"
-                      className="px-6 py-2.5 border border-white/15 rounded-full text-[0.75rem] font-semibold tracking-[1px] uppercase text-[#f0f0f0] hover:border-sol-gold hover:text-sol-gold transition-all whitespace-nowrap"
-                    >
-                      RSVP
-                    </a>
+                    <div className="text-[0.85rem] text-[#888] mt-0.5">
+                      {show.address.street}, {show.address.city}, {show.address.region} {show.address.postalCode}
+                    </div>
+                    <div className="text-[0.85rem] font-semibold text-sol-gold mt-1">
+                      {[showDate(show.start, { hour: "numeric", minute: "2-digit" }), show.free && "Free show"]
+                        .filter(Boolean)
+                        .join(" \u2022 ")}
+                    </div>
                   </div>
                 </div>
               </FadeIn>
@@ -220,9 +264,9 @@ export default function Home() {
       <div className="rasta-divider" />
 
       {/* ═══════════════════ INSTAGRAM ═══════════════════ */}
-      <section id="instagram" className="py-[100px] px-6 bg-sol-darker text-center">
+      <section id="instagram" className="py-[100px] px-6 bg-sol-darker">
         <div className="max-w-[1200px] mx-auto">
-          <div className="flex flex-col items-center mb-12">
+          <div className="flex flex-col items-center text-center mb-12">
             <div className="section-label" style={{ justifyContent: "center" }}>@king_vibes_official</div>
             <h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] leading-tight">Follow the Vibes</h2>
             <a
@@ -236,48 +280,9 @@ export default function Home() {
             </a>
           </div>
 
-          {/* IG Grid */}
-          <div className="ig-grid">
-            {igItems.map((item, i) => (
-              <a
-                key={i}
-                className="ig-item"
-                href="https://www.instagram.com/king_vibes_official/"
-                target="_blank"
-                rel="noopener"
-              >
-                <div className={`w-full h-full bg-gradient-to-br ${item.gradient} flex items-center justify-center text-[2.5rem]`}>
-                  {item.emoji}
-                </div>
-                <div className="ig-overlay">
-                  <span className="text-[0.85rem] font-semibold">View Post</span>
-                </div>
-              </a>
-            ))}
-          </div>
-
-          <div className="mt-8 max-w-[800px] mx-auto p-8 bg-sol-card border border-sol-border rounded-2xl text-center">
-            <p className="text-[#888] mb-5 text-[1rem]">
-              &#x1F4F8; For a live Instagram feed, add the <strong className="text-[#f0f0f0]">Elfsight</strong> or{" "}
-              <strong className="text-[#f0f0f0]">Curator.io</strong> widget to your production site &mdash; both offer free tiers and plug
-              directly into Next.js.
-            </p>
-            <a
-              href="https://www.instagram.com/king_vibes_official/"
-              target="_blank"
-              rel="noopener"
-              className="btn btn-outline inline-flex"
-            >
-              Visit Our Instagram
-            </a>
-          </div>
+          <InstagramFeed />
         </div>
       </section>
-
-      <div className="rasta-divider" />
-
-      {/* ═══════════════════ SHOP ═══════════════════ */}
-      <ShopSection />
 
       <div className="rasta-divider" />
 
