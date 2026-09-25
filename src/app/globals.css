@@ -171,35 +171,6 @@ body {
 }
 
 /* ═══════════════════════════════════════
-   INSTAGRAM GRID
-   ═══════════════════════════════════════ */
-.ig-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
-  border-radius: 12px;
-  overflow: hidden;
-}
-.ig-item {
-  aspect-ratio: 1;
-  position: relative;
-  overflow: hidden;
-}
-.ig-item .ig-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.ig-item:hover .ig-overlay {
-  opacity: 1;
-}
-
-/* ═══════════════════════════════════════
    FORM INPUTS
    ═══════════════════════════════════════ */
 .form-input {
@@ -287,8 +258,5 @@ body {
   .show-item {
     grid-template-columns: 80px 1fr;
     gap: 16px;
-  }
-  .ig-grid {
-    grid-template-columns: repeat(2, 1fr);
   }
 }

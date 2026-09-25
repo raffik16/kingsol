@@ -1,5 +1,6 @@
 import FadeIn from "./components/FadeIn";
 import ContactSection from "./components/ContactSection";
+import InstagramFeed from "./components/InstagramFeed";
 import { ToastProvider } from "./components/Toast";
 
 const releases = [
@@ -18,17 +19,6 @@ const shows = [
   { month: "MAR", day: "22", venue: "Reggae Sunday @ Rock & Roll Pizza", location: "Los Angeles, CA \u2022 3-9 PM" },
   { month: "APR", day: "05", venue: "DiPiazza's", location: "Long Beach, CA \u2022 8 PM" },
   { month: "APR", day: "19", venue: "Malibu Music Second Saturdays", location: "Malibu, CA \u2022 6 PM" },
-];
-
-const igItems = [
-  { emoji: "\u{1F3B6}", gradient: "from-[#E4312B33] to-[#F8D12F22]" },
-  { emoji: "\u{1F3A4}", gradient: "from-[#2D9B4233] to-[#F5A62322]" },
-  { emoji: "\u{1F525}", gradient: "from-[#F5A62333] to-[#E4312B22]" },
-  { emoji: "\u{1F3B5}", gradient: "from-[#F8D12F33] to-[#2D9B4222]" },
-  { emoji: "\u270A", gradient: "from-[#2D9B4233] to-[#E4312B22]" },
-  { emoji: "\u{1F451}", gradient: "from-[#E4312B33] to-[#2D9B4222]" },
-  { emoji: "\u2600\uFE0F", gradient: "from-[#F5A62333] to-[#F8D12F22]" },
-  { emoji: "\u{1F30A}", gradient: "from-[#F8D12F33] to-[#E4312B22]" },
 ];
 
 export default function Home() {
@@ -217,9 +207,9 @@ export default function Home() {
       <div className="rasta-divider" />
 
       {/* ═══════════════════ INSTAGRAM ═══════════════════ */}
-      <section id="instagram" className="py-[100px] px-6 bg-sol-darker text-center">
+      <section id="instagram" className="py-[100px] px-6 bg-sol-darker">
         <div className="max-w-[1200px] mx-auto">
-          <div className="flex flex-col items-center mb-12">
+          <div className="flex flex-col items-center text-center mb-12">
             <div className="section-label" style={{ justifyContent: "center" }}>@king_vibes_official</div>
             <h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] leading-tight">Follow the Vibes</h2>
             <a
@@ -233,25 +223,7 @@ export default function Home() {
             </a>
           </div>
 
-          {/* IG Grid */}
-          <div className="ig-grid">
-            {igItems.map((item, i) => (
-              <a
-                key={i}
-                className="ig-item"
-                href="https://www.instagram.com/king_vibes_official/"
-                target="_blank"
-                rel="noopener"
-              >
-                <div className={`w-full h-full bg-gradient-to-br ${item.gradient} flex items-center justify-center text-[2.5rem]`}>
-                  {item.emoji}
-                </div>
-                <div className="ig-overlay">
-                  <span className="text-[0.85rem] font-semibold">View Post</span>
-                </div>
-              </a>
-            ))}
-          </div>
+          <InstagramFeed />
         </div>
       </section>
 
