@@ -207,14 +207,6 @@ export default function Home() {
                     <div className="font-semibold text-[1.05rem]">{show.venue}</div>
                     <div className="text-[0.85rem] text-[#888] mt-0.5">{show.location}</div>
                   </div>
-                  <div className="show-btn-cell">
-                    <a
-                      href="#"
-                      className="px-6 py-2.5 border border-white/15 rounded-full text-[0.75rem] font-semibold tracking-[1px] uppercase text-[#f0f0f0] hover:border-sol-gold hover:text-sol-gold transition-all whitespace-nowrap"
-                    >
-                      RSVP
-                    </a>
-                  </div>
                 </div>
               </FadeIn>
             ))}
@@ -259,22 +251,6 @@ export default function Home() {
                 </div>
               </a>
             ))}
-          </div>
-
-          <div className="mt-8 max-w-[800px] mx-auto p-8 bg-sol-card border border-sol-border rounded-2xl text-center">
-            <p className="text-[#888] mb-5 text-[1rem]">
-              &#x1F4F8; For a live Instagram feed, add the <strong className="text-[#f0f0f0]">Elfsight</strong> or{" "}
-              <strong className="text-[#f0f0f0]">Curator.io</strong> widget to your production site &mdash; both offer free tiers and plug
-              directly into Next.js.
-            </p>
-            <a
-              href="https://www.instagram.com/king_vibes_official/"
-              target="_blank"
-              rel="noopener"
-              className="btn btn-outline inline-flex"
-            >
-              Visit Our Instagram
-            </a>
           </div>
         </div>
       </section>
