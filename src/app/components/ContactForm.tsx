@@ -1,72 +1,64 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useToast } from "./Toast";
 
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/mnpnzldr";
+
+// Reports the result through a toast, so render it inside a ToastProvider.
 export default function ContactForm() {
-  const [sent, setSent] = useState(false);
+  const { showToast } = useToast();
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleContact = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSent(true);
-    setTimeout(() => setSent(false), 4000);
+    const form = e.currentTarget;
+    setSubmitting(true);
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) throw new Error(`Formspree responded ${res.status}`);
+      showToast("Message sent! We'll get back to you soon.");
+      form.reset();
+    } catch {
+      showToast("Something went wrong. Please email kingsol420@gmail.com directly.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <div className="relative">
-      {sent && (
-        <div className="fixed top-20 right-4 z-50 bg-rasta-gold text-black px-6 py-3 rounded-lg font-semibold shadow-lg animate-fade-in-up">
-          ✓ Message sent! One love 🤙
+    <form action={FORMSPREE_ENDPOINT} method="POST" onSubmit={handleContact} className="flex flex-col gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[0.75rem] font-semibold tracking-[1.5px] uppercase text-[#888]">Name</label>
+          <input type="text" name="name" placeholder="Your name" required className="form-input" />
         </div>
-      )}
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2 font-display uppercase tracking-wider">Name</label>
-          <input
-            type="text"
-            required
-            className="input-rasta w-full bg-sol-card border border-sol-border rounded-lg px-4 py-3 text-white transition-all duration-200 min-h-[44px]"
-            placeholder="Your name"
-          />
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[0.75rem] font-semibold tracking-[1.5px] uppercase text-[#888]">Email</label>
+          <input type="email" name="email" placeholder="your@email.com" required className="form-input" />
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2 font-display uppercase tracking-wider">Email</label>
-          <input
-            type="email"
-            required
-            className="input-rasta w-full bg-sol-card border border-sol-border rounded-lg px-4 py-3 text-white transition-all duration-200 min-h-[44px]"
-            placeholder="your@email.com"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2 font-display uppercase tracking-wider">Subject</label>
-          <select
-            required
-            className="input-rasta w-full bg-sol-card border border-sol-border rounded-lg px-4 py-3 text-white transition-all duration-200 min-h-[44px]"
-          >
-            <option value="">Select a subject</option>
-            <option value="booking">Booking</option>
-            <option value="reggae-sunday">Reggae Sunday Booking</option>
-            <option value="press">Press</option>
-            <option value="general">General</option>
-            <option value="merch">Merch</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2 font-display uppercase tracking-wider">Message</label>
-          <textarea
-            required
-            rows={5}
-            className="input-rasta w-full bg-sol-card border border-sol-border rounded-lg px-4 py-3 text-white transition-all duration-200 resize-none"
-            placeholder="What's on your mind?"
-          />
-        </div>
-        <button
-          type="submit"
-          className="btn-rasta w-full bg-gradient-to-r from-rasta-gold to-rasta-green text-black font-display font-bold uppercase tracking-wider py-3 rounded-lg hover:from-rasta-green hover:to-rasta-gold transition-all duration-300 min-h-[44px]"
-        >
-          Send Message
-        </button>
-      </form>
-    </div>
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <label className="text-[0.75rem] font-semibold tracking-[1.5px] uppercase text-[#888]">Subject</label>
+        <select name="_subject" className="form-input">
+          <option>Booking Inquiry</option>
+          <option>Press / Media</option>
+          <option>Collaboration</option>
+          <option>Merch Question</option>
+          <option>General</option>
+        </select>
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <label className="text-[0.75rem] font-semibold tracking-[1.5px] uppercase text-[#888]">Message</label>
+        <textarea name="message" required placeholder="Tell us what's on your mind..." className="form-input resize-y min-h-[120px]" />
+      </div>
+      <button type="submit" disabled={submitting} className="btn btn-primary self-start disabled:opacity-60 disabled:cursor-not-allowed">
+        {submitting ? "Sending..." : "Send Message"}
+      </button>
+    </form>
   );
 }
