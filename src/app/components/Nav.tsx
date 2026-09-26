@@ -4,12 +4,13 @@ import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { usePathname } from "next/navigation";
 
+// `section` is the home page section that highlights the link while it is scrolled into view.
 const navLinks = [
-  { href: "/#hero", label: "Home" },
-  { href: "/#about", label: "About" },
-  { href: "/#music", label: "Music" },
-  { href: "/#shows", label: "Shows" },
-  { href: "/#contact", label: "Contact" },
+  { href: "/#hero", label: "Home", section: "hero" },
+  { href: "/about", label: "About", section: "about" },
+  { href: "/#music", label: "Music", section: "music" },
+  { href: "/#shows", label: "Shows", section: "shows" },
+  { href: "/#contact", label: "Contact", section: "contact" },
 ];
 
 export default function Nav() {
@@ -65,8 +66,8 @@ export default function Nav() {
         {/* Desktop Nav Links */}
         <ul className="hidden md:flex gap-8 list-none">
           {navLinks.map((link) => {
-            const sectionId = link.href.replace("/#", "");
-            const isActive = pathname === "/" && activeSection === sectionId;
+            const isActive =
+              pathname === link.href || (pathname === "/" && activeSection === link.section);
             return (
               <li key={link.href}>
                 <a

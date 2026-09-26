@@ -1,3 +1,4 @@
+import Link from "next/link";
 import FadeIn from "./components/FadeIn";
 import ContactSection from "./components/ContactSection";
 import InstagramFeed from "./components/InstagramFeed";
@@ -202,6 +203,9 @@ export default function Home() {
                     <div className="text-[0.75rem] text-[#888] tracking-[1px] uppercase mt-1">Releases</div>
                   </div>
                 </div>
+                <Link href="/about" className="btn btn-outline self-start">
+                  Meet the Band
+                </Link>
               </div>
             </FadeIn>
           </div>
