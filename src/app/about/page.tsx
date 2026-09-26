@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { baseOpenGraph } from "../site";
+import ContactForm from "../components/ContactForm";
 import FadeIn from "../components/FadeIn";
+import { ToastProvider } from "../components/Toast";
 
 const members = [
   {
@@ -36,7 +38,7 @@ const members = [
 ];
 
 const description =
-  "Meet King Sol & The Vibes, a high-energy Latin Reggae Rock band from Los Angeles fusing reggae, rock, and Latin rhythms.";
+  "Meet the members of King Sol & The Vibes, the Latin Reggae Rock band from Los Angeles, and get in touch for bookings and press.";
 
 export const metadata: Metadata = {
   title: "About the Band",
@@ -50,32 +52,8 @@ export default function About() {
     <div className="pt-24 pb-16">
       <section className="max-w-[1200px] mx-auto px-6 py-[100px]">
         <FadeIn>
-          <div className="section-label">About the Band</div>
-          <h1 className="font-display text-[clamp(2.5rem,5vw,4rem)] leading-tight mb-8">
-            Born From the Streets of LA
-          </h1>
-        </FadeIn>
-        <FadeIn>
-          <div className="space-y-6 text-[#888] text-[1.05rem] leading-relaxed max-w-3xl">
-            <p>
-              <strong className="text-[#f0f0f0] font-semibold">King Sol & The Vibes</strong> is a high-energy Latin Reggae Rock band straight out of Los Angeles. Fronted by <strong className="text-[#f0f0f0] font-semibold">King Sol</strong>, whose musical roots trace back to Guadalajara, Jalisco, the band delivers an electrifying fusion of reggae, rock, and Latin rhythms that gets every crowd on their feet.
-            </p>
-            <p>
-              Growing up in a family of musicians, King Sol was performing with professional bands by his early teens. After moving to America, he connected with co-founder <strong className="text-[#f0f0f0] font-semibold">Willy Will</strong> and together they built something powerful &mdash; music that carries messages of rebellion, social justice, love, and freedom.
-            </p>
-            <p>
-              Their dedicated fanbase, known as the <strong className="text-[#f0f0f0] font-semibold">&ldquo;Vibeaholics,&rdquo;</strong> continues to grow across all ages and nationalities, united by the universal language of rhythm and conscious lyrics.
-            </p>
-          </div>
-        </FadeIn>
-      </section>
-
-      <div className="rasta-divider" />
-
-      <section className="max-w-[1200px] mx-auto px-6 py-[100px]">
-        <FadeIn>
           <div className="section-label">The Band</div>
-          <h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] leading-tight mb-12">Meet the Vibes</h2>
+          <h1 className="font-display text-[clamp(2.5rem,5vw,4rem)] leading-tight mb-12">Meet the Vibes</h1>
         </FadeIn>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {members.map((member, i) => (
@@ -94,6 +72,22 @@ export default function About() {
             </FadeIn>
           ))}
         </div>
+      </section>
+
+      <div className="rasta-divider" />
+
+      <section className="max-w-[1200px] mx-auto px-6 py-[100px]">
+        <FadeIn>
+          <div className="section-label">Get in Touch</div>
+          <h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] leading-tight mb-10">Contact the Band</h2>
+        </FadeIn>
+        <FadeIn>
+          <div className="max-w-[720px]">
+            <ToastProvider>
+              <ContactForm />
+            </ToastProvider>
+          </div>
+        </FadeIn>
       </section>
     </div>
   );
