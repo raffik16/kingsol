@@ -21,7 +21,7 @@ export const baseOpenGraph: NonNullable<Metadata["openGraph"]> = {
       url: "/og.png",
       width: 1200,
       height: 630,
-      alt: "King Sol & The Vibes — Latin Reggae Rock from Los Angeles",
+      alt: "King Sol & The Vibes — Latin Reggae Rock from Los Angeles. Listen now or book the band.",
     },
   ],
 };

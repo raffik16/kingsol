@@ -9,7 +9,7 @@ const description =
 export const metadata: Metadata = {
   metadataBase: siteUrl,
   title: {
-    default: "King Sol & The Vibes | Latin Reggae Rock from Los Angeles",
+    default: "King Sol & The Vibes | Latin Reggae Rock, Los Angeles",
     template: "%s | King Sol & The Vibes",
   },
   description,
