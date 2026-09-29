@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import Nav from "./components/Nav";
 import { baseOpenGraph, siteUrl } from "./site";
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </footer>
       </body>
+      <GoogleAnalytics gaId="G-KT67XCRWEC" />
     </html>
   );
 }
