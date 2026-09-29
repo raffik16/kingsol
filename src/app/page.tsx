@@ -1,3 +1,5 @@
+import Image from "next/image";
+import bandPhoto from "../../public/images/band.jpg";
 import FadeIn from "./components/FadeIn";
 import ContactSection from "./components/ContactSection";
 import InstagramFeed from "./components/InstagramFeed";
@@ -149,21 +151,17 @@ export default function Home() {
       <section id="about" className="py-[100px] px-6 bg-gradient-to-b from-sol-dark to-[#080808]">
         <div className="max-w-[1200px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center mt-[60px]">
-            {/* Image placeholder */}
+            {/* Band photo */}
             <FadeIn>
               <div className="relative rounded-2xl overflow-hidden aspect-[4/5] bg-sol-card">
-                <div
-                  className="w-full h-full flex items-center justify-center"
-                  style={{
-                    background: "linear-gradient(135deg, rgba(228,49,43,0.2), rgba(248,209,47,0.15), rgba(45,155,66,0.2))",
-                  }}
-                >
-                  <div className="text-center">
-                    <div className="text-[5rem] mb-4">&#x1F451;&#x2600;&#xFE0F;</div>
-                    <div className="font-display text-[1.4rem] text-sol-gold">KING SOL</div>
-                    <div className="font-display text-[1rem] text-[#888]">& THE VIBES</div>
-                  </div>
-                </div>
+                <Image
+                  src={bandPhoto}
+                  alt="King Sol & The Vibes, five band members sitting on a vintage couch in front of a weathered white wooden wall"
+                  fill
+                  sizes="(min-width: 1024px) 560px, calc(100vw - 48px)"
+                  placeholder="blur"
+                  className="object-cover"
+                />
                 <div className="absolute inset-0 border border-sol-gold/15 rounded-2xl pointer-events-none" />
               </div>
             </FadeIn>
