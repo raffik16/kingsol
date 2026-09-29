@@ -148,29 +148,33 @@ export default function Home() {
       <div className="rasta-divider" />
 
       {/* ═══════════════════ ABOUT ═══════════════════ */}
-      <section id="about" className="py-[100px] px-6 bg-gradient-to-b from-sol-dark to-[#080808]">
+      <section id="about" className="pt-12 pb-[100px] lg:pt-[100px] px-6 bg-gradient-to-b from-sol-dark to-[#080808]">
         <div className="max-w-[1200px] mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center mt-[60px]">
-            {/* Band photo */}
-            <FadeIn>
-              <div className="relative rounded-2xl overflow-hidden aspect-[4/5] bg-sol-card">
-                <Image
-                  src={bandPhoto}
-                  alt="King Sol & The Vibes, five band members sitting on a vintage couch in front of a weathered white wooden wall"
-                  fill
-                  sizes="(min-width: 1024px) 560px, calc(100vw - 48px)"
-                  placeholder="blur"
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 border border-sol-gold/15 rounded-2xl pointer-events-none" />
-              </div>
-            </FadeIn>
+          {/* Band photo: full width so the landscape shot reads well; desktop trims only the top of the wall */}
+          <FadeIn>
+            <div className="relative rounded-2xl overflow-hidden aspect-[3/2] lg:aspect-[16/9] bg-sol-card">
+              <Image
+                src={bandPhoto}
+                alt="King Sol & The Vibes, five band members sitting on a vintage couch in front of a weathered white wooden wall"
+                fill
+                sizes="(min-width: 1248px) 1200px, calc(100vw - 48px)"
+                placeholder="blur"
+                className="object-cover object-bottom"
+              />
+              <div className="absolute inset-0 border border-sol-gold/15 rounded-2xl pointer-events-none" />
+            </div>
+          </FadeIn>
 
-            {/* Content */}
+          <div className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-6 lg:gap-20 mt-12 lg:mt-16">
             <FadeIn>
               <div className="flex flex-col gap-6">
                 <div className="section-label">About the Band</div>
                 <h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] leading-tight">Born From the Streets of LA</h2>
+              </div>
+            </FadeIn>
+
+            <FadeIn>
+              <div className="flex flex-col gap-6">
                 <p className="text-[#888] text-[1.05rem] leading-relaxed">
                   <strong className="text-[#f0f0f0] font-semibold">King Sol & The Vibes</strong> is a high-energy Latin Reggae Rock band
                   straight out of Los Angeles. Fronted by <strong className="text-[#f0f0f0] font-semibold">King Sol</strong>, whose musical
