@@ -6,6 +6,7 @@ import InstagramFeed from "./components/InstagramFeed";
 import ReleaseGrid, { type Release } from "./components/ReleaseGrid";
 import { socials } from "./components/SocialLinks";
 import { ToastProvider } from "./components/Toast";
+import { siteUrl } from "./site";
 
 const releases: Release[] = [
   { title: "\u00A1Que Se Vaya ICE!", year: "2026", type: "single", spotifyId: "0tXM2mSzWHF6OPe7LgD83R" },
@@ -41,7 +42,14 @@ const bandJsonLd = {
 };
 
 // Start times carry their UTC offset (-07:00 is Pacific Daylight Time, -08:00 Standard).
-const shows = [
+// `end` is optional; add it in the same format once a show's end time is known.
+const shows: {
+  start: string;
+  end?: string;
+  venue: string;
+  address: { street: string; city: string; region: string; postalCode: string };
+  free: boolean;
+}[] = [
   {
     start: "2026-10-23T20:30:00-07:00",
     venue: "The Pike Restaurant & Bar",
@@ -59,7 +67,10 @@ const showsJsonLd = shows.map((show) => ({
   "@context": "https://schema.org",
   "@type": "MusicEvent",
   name: `King Sol & The Vibes at ${show.venue}`,
+  description: `King Sol & The Vibes bring their high energy Latin Reggae Rock to ${show.venue} in ${show.address.city}, ${show.address.region}.${show.free ? " Free show." : ""}`,
+  image: [new URL("/images/band.jpg", siteUrl).href, new URL("/og.png", siteUrl).href],
   startDate: show.start,
+  ...(show.end ? { endDate: show.end } : {}),
   eventStatus: "https://schema.org/EventScheduled",
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
   location: {
@@ -75,10 +86,17 @@ const showsJsonLd = shows.map((show) => ({
     },
   },
   performer: { "@type": "MusicGroup", name: "King Sol & The Vibes" },
+  organizer: { "@type": "MusicGroup", name: "King Sol & The Vibes", url: siteUrl.href },
   ...(show.free
     ? {
         isAccessibleForFree: true,
-        offers: { "@type": "Offer", price: 0, priceCurrency: "USD", availability: "https://schema.org/InStock" },
+        offers: {
+          "@type": "Offer",
+          url: new URL("/#shows", siteUrl).href,
+          price: 0,
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+        },
       }
     : {}),
 }));

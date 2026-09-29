@@ -57,8 +57,7 @@ export default function Nav() {
     >
       <div className="max-w-[1200px] mx-auto px-6 flex items-center justify-between h-[72px]">
         {/* Logo */}
-        <Link href="/" className="font-display text-[1.1rem] tracking-[1px] text-sol-gold flex items-center gap-2.5">
-          <span className="text-[1.4rem]">&#x1F451;</span>
+        <Link href="/" className="font-display text-[1.1rem] tracking-[1px] text-sol-gold">
           KING SOL & THE VIBES
         </Link>
 

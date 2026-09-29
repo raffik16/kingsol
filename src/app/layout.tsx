@@ -50,7 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <footer className="py-[60px] px-6 bg-sol-darker border-t border-sol-border">
           <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-3">
             <div className="font-display text-[0.9rem] text-sol-gold">
-              &#x1F451; KING SOL & THE VIBES
+              KING SOL & THE VIBES
             </div>
             <div className="italic text-[#888] text-[0.85rem]">
               Love &bull; Truth &bull; Freedom
