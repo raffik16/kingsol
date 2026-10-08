@@ -20,9 +20,10 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ["'Dela Gothic One'", "sans-serif"],
-        body: ["'Inter'", "sans-serif"],
-        accent: ["'Playfair Display'", "serif"],
+        // Variables are set by next/font in the root layout.
+        display: ["var(--font-display)", "sans-serif"],
+        body: ["var(--font-body)", "sans-serif"],
+        accent: ["var(--font-accent)", "serif"],
       },
       keyframes: {
         "fade-in-up": {
