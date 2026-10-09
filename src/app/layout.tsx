@@ -1,8 +1,19 @@
 import type { Metadata } from "next";
+import { Inter, Playfair_Display } from "next/font/google";
+import localFont from "next/font/local";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import Nav from "./components/Nav";
 import { baseOpenGraph, siteUrl } from "./site";
+
+// Fonts are self-hosted at build time so the hero heading (the page's LCP element) never
+// waits on a render-blocking stylesheet from Google. Tailwind's font-* utilities read these variables.
+// Dela Gothic One is the Google Fonts Latin subset (OFL): next/font/google would add a
+// @font-face rule for each of its ~120 Japanese subsets, growing the page CSS eightfold.
+const displayFont = localFont({ src: "./fonts/DelaGothicOne-latin.woff2", weight: "400", variable: "--font-display" });
+const bodyFont = Inter({ subsets: ["latin"], variable: "--font-body" });
+// Only the italic "&" in the hero heading uses this.
+const accentFont = Playfair_Display({ weight: "700", style: "italic", subsets: ["latin"], variable: "--font-accent" });
 
 const description =
   "King Sol & The Vibes — High energy Latin Reggae Rock from Los Angeles. Love, Truth, Freedom.";
@@ -25,14 +36,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${displayFont.variable} ${bodyFont.variable} ${accentFont.variable}`}
+    >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap"
-          rel="stylesheet"
-        />
         {/* FadeIn content starts hidden until JS reveals it; show it outright without JS. */}
         <noscript>
           <style>{`.fade-in { opacity: 1 !important; transform: none !important; }`}</style>
