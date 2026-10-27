@@ -322,7 +322,7 @@ export interface HomePage {
           year: string;
           type: 'album' | 'ep' | 'single';
           /**
-           * Paste the album’s Spotify link.
+           * In Spotify, open the album or single (not an individual song), click ⋯ → Share → Copy Album Link, and paste it here.
            */
           spotifyId: string;
           id?: string | null;

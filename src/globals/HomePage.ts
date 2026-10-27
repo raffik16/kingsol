@@ -71,7 +71,10 @@ export const HomePage: GlobalConfig = {
                   label: "Spotify album",
                   type: "text",
                   required: true,
-                  admin: { description: "Paste the album’s Spotify link." },
+                  admin: {
+                    description:
+                      "In Spotify, open the album or single (not an individual song), click ⋯ → Share → Copy Album Link, and paste it here.",
+                  },
                   // Keep only the album ID from a pasted link like https://open.spotify.com/album/<id>?si=...
                   hooks: { beforeValidate: [({ value }) => value?.match(/album\/(\w+)/)?.[1] ?? value] },
                 },
