@@ -1,30 +1,23 @@
+import config from "@payload-config";
+import { RichText } from "@payloadcms/richtext-lexical/react";
 import Image from "next/image";
-import bandPhoto from "../../public/images/band.jpg";
+import { getPayload } from "payload";
+import bandPhoto from "../../../public/images/band.jpg";
+import type { HomePage } from "../../payload-types";
 import FadeIn from "./components/FadeIn";
 import ContactSection from "./components/ContactSection";
 import InstagramFeed from "./components/InstagramFeed";
 import ReleaseGrid, { type Release } from "./components/ReleaseGrid";
 import { socials } from "./components/SocialLinks";
 import { ToastProvider } from "./components/Toast";
-import { siteUrl } from "./site";
+import { siteUrl } from "../site";
 
-const releases: Release[] = [
-  { title: "\u00A1Que Se Vaya ICE!", year: "2026", type: "single", spotifyId: "0tXM2mSzWHF6OPe7LgD83R" },
-  { title: "Good Thing", year: "2025", type: "single", spotifyId: "0gDhp3vackt0nXE7mr1B7x" },
-  { title: "Three Worlds", year: "2023", type: "album", spotifyId: "6OGLYQmslVZqEll8tJ2CUe" },
-  { title: "Mass Shooting", year: "2023", type: "single", spotifyId: "7lP5kjR95aolNdOqQAFmdn" },
-  { title: "Broken History", year: "2021", type: "single", spotifyId: "0YSzWUhJMvBs3cREbUIcDw" },
-  { title: "Corona Panic", year: "2021", type: "single", spotifyId: "3h3akaefagUFT17JtdmoNG" },
-  { title: "Ooh Baby", year: "2021", type: "single", spotifyId: "22Wzgk4Gwsxry6EPby4IMO" },
-  { title: "We Will Rise", year: "2020", type: "ep", spotifyId: "3uAKjmkuCzXDClELGzFosN" },
-  { title: "Political Brother", year: "2020", type: "single", spotifyId: "1kgUOgPEA7LlbIQDcrGDwj" },
-  { title: "Reggae Blues", year: "2018", type: "single", spotifyId: "4FQJsefH4y315GhJ6zekcv" },
-];
+type Show = NonNullable<HomePage["shows"]["upcoming"]>[number];
 
 const releaseTypes = { album: "AlbumRelease", single: "SingleRelease", ep: "EPRelease" } as const;
 
 // schema.org data so search engines can tie this page to the band and its releases.
-const bandJsonLd = {
+const bandJsonLd = (releases: Release[]) => ({
   "@context": "https://schema.org",
   "@type": "MusicGroup",
   name: "King Sol & The Vibes",
@@ -39,31 +32,14 @@ const bandJsonLd = {
     albumReleaseType: `https://schema.org/${releaseTypes[r.type]}`,
     url: `https://open.spotify.com/album/${r.spotifyId}`,
   })),
-};
+});
 
-// Start times carry their UTC offset (-07:00 is Pacific Daylight Time, -08:00 Standard).
-// `end` is optional; add it in the same format once a show's end time is known.
-const shows: {
-  start: string;
-  end?: string;
-  venue: string;
-  address: { street: string; city: string; region: string; postalCode: string };
-  free: boolean;
-}[] = [
-  {
-    start: "2026-10-23T20:30:00-07:00",
-    venue: "The Pike Restaurant & Bar",
-    address: { street: "1836 E 4th St", city: "Long Beach", region: "CA", postalCode: "90802" },
-    free: true,
-  },
-];
-
-// Format in Los Angeles time so the build machine's timezone can't shift the date or time.
+// Format in Los Angeles time so the server's timezone can't shift the date or time.
 const showDate = (iso: string, options: Intl.DateTimeFormatOptions) =>
   new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles", ...options }).format(new Date(iso));
 
 // schema.org events make shows eligible for Google's event listings in search.
-const showsJsonLd = shows.map((show) => ({
+const showJsonLd = (show: Show) => ({
   "@context": "https://schema.org",
   "@type": "MusicEvent",
   name: `King Sol & The Vibes at ${show.venue}`,
@@ -99,15 +75,20 @@ const showsJsonLd = shows.map((show) => ({
         },
       }
     : {}),
-}));
+});
 
-export default function Home() {
+export default async function Home() {
+  const payload = await getPayload({ config });
+  const { about, music, shows: showsSection, contact } = await payload.findGlobal({ slug: "home-page" });
+  const releases = music.releases ?? [];
+  const shows = (showsSection.upcoming ?? []).toSorted((a, b) => a.start.localeCompare(b.start));
+
   return (
     <ToastProvider>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify([bandJsonLd, ...showsJsonLd]).replace(/</g, "\\u003c"),
+          __html: JSON.stringify([bandJsonLd(releases), ...shows.map(showJsonLd)]).replace(/</g, "\\u003c"),
         }}
       />
 
@@ -187,40 +168,23 @@ export default function Home() {
             <FadeIn>
               <div className="flex flex-col gap-6">
                 <div className="section-label">About the Band</div>
-                <h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] leading-tight">Born From the Streets of LA</h2>
+                <h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] leading-tight">{about.heading}</h2>
               </div>
             </FadeIn>
 
             <FadeIn>
               <div className="flex flex-col gap-6">
-                <p className="text-[#888] text-[1.05rem] leading-relaxed">
-                  <strong className="text-[#f0f0f0] font-semibold">King Sol & The Vibes</strong> is a high-energy Latin Reggae Rock band
-                  straight out of Los Angeles. Fronted by <strong className="text-[#f0f0f0] font-semibold">King Sol</strong>, whose musical
-                  roots trace back to Guadalajara, Jalisco, the band delivers an electrifying fusion of reggae, rock, and Latin rhythms
-                  that gets every crowd on their feet.
-                </p>
-                <p className="text-[#888] text-[1.05rem] leading-relaxed">
-                  Growing up in a family of musicians, King Sol was performing with professional bands by his early teens. After moving to
-                  America, he connected with co-founder <strong className="text-[#f0f0f0] font-semibold">Willy Will</strong> and together they
-                  built something powerful &mdash; music that carries messages of rebellion, social justice, love, and freedom.
-                </p>
-                <p className="text-[#888] text-[1.05rem] leading-relaxed">
-                  Their dedicated fanbase, known as the <strong className="text-[#f0f0f0] font-semibold">&ldquo;Vibeaholics,&rdquo;</strong>{" "}
-                  continues to grow across all ages and nationalities, united by the universal language of rhythm and conscious lyrics.
-                </p>
+                <RichText
+                  data={about.bio}
+                  className="flex flex-col gap-6 text-[#888] text-[1.05rem] leading-relaxed [&_strong]:text-[#f0f0f0] [&_strong]:font-semibold"
+                />
                 <div className="grid grid-cols-3 gap-6 mt-4 pt-8 border-t border-sol-border">
-                  <div>
-                    <div className="font-display text-[1.6rem] text-sol-gold">2018</div>
-                    <div className="text-[0.75rem] text-[#888] tracking-[1px] uppercase mt-1">Since</div>
-                  </div>
-                  <div>
-                    <div className="font-display text-[1.6rem] text-sol-gold">LA</div>
-                    <div className="text-[0.75rem] text-[#888] tracking-[1px] uppercase mt-1">Based</div>
-                  </div>
-                  <div>
-                    <div className="font-display text-[1.6rem] text-sol-gold">10+</div>
-                    <div className="text-[0.75rem] text-[#888] tracking-[1px] uppercase mt-1">Releases</div>
-                  </div>
+                  {about.stats?.map((stat) => (
+                    <div key={stat.id}>
+                      <div className="font-display text-[1.6rem] text-sol-gold">{stat.value}</div>
+                      <div className="text-[0.75rem] text-[#888] tracking-[1px] uppercase mt-1">{stat.label}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </FadeIn>
@@ -235,7 +199,7 @@ export default function Home() {
         <div className="max-w-[1200px] mx-auto">
           <FadeIn><div className="section-label">Discography</div></FadeIn>
           <FadeIn><h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] leading-tight mb-5">Our Music</h2></FadeIn>
-          <FadeIn><p className="text-[1.05rem] text-[#888] max-w-[600px] leading-relaxed">Stream our latest tracks and albums on every major platform.</p></FadeIn>
+          <FadeIn><p className="text-[1.05rem] text-[#888] max-w-[600px] leading-relaxed">{music.intro}</p></FadeIn>
 
           <ReleaseGrid releases={releases} />
         </div>
@@ -248,11 +212,11 @@ export default function Home() {
         <div className="max-w-[1200px] mx-auto">
           <FadeIn><div className="section-label">Live</div></FadeIn>
           <FadeIn><h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] leading-tight mb-5">Upcoming Shows</h2></FadeIn>
-          <FadeIn><p className="text-[1.05rem] text-[#888] max-w-[600px] leading-relaxed">Catch us live at a venue near you. Come feel the vibes in person.</p></FadeIn>
+          <FadeIn><p className="text-[1.05rem] text-[#888] max-w-[600px] leading-relaxed">{showsSection.intro}</p></FadeIn>
 
           <div className="flex flex-col gap-0.5 mt-12">
             {shows.map((show) => (
-              <FadeIn key={show.start + show.venue}>
+              <FadeIn key={show.id}>
                 <div className="show-item">
                   <div className="text-center">
                     <div className="text-[0.7rem] font-semibold tracking-[2px] uppercase text-sol-gold">
@@ -307,7 +271,7 @@ export default function Home() {
       <div className="rasta-divider" />
 
       {/* ═══════════════════ CONTACT ═══════════════════ */}
-      <ContactSection />
+      <ContactSection {...contact} />
     </ToastProvider>
   );
 }

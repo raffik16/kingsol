@@ -4,7 +4,7 @@ import localFont from "next/font/local";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import Nav from "./components/Nav";
-import { baseOpenGraph, siteUrl } from "./site";
+import { baseOpenGraph, siteUrl } from "../site";
 
 // Fonts are self-hosted at build time so the hero heading (the page's LCP element) never
 // waits on a render-blocking stylesheet from Google. Tailwind's font-* utilities read these variables.
