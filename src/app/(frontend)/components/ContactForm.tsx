@@ -6,7 +6,7 @@ import { useToast } from "./Toast";
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/mnpnzldr";
 
 // Reports the result through a toast, so render it inside a ToastProvider.
-export default function ContactForm() {
+export default function ContactForm({ email }: { email: string }) {
   const { showToast } = useToast();
   const [submitting, setSubmitting] = useState(false);
 
@@ -24,7 +24,7 @@ export default function ContactForm() {
       showToast("Message sent! We'll get back to you soon.");
       form.reset();
     } catch {
-      showToast("Something went wrong. Please email kingsol420@gmail.com directly.");
+      showToast(`Something went wrong. Please email ${email} directly.`);
     } finally {
       setSubmitting(false);
     }
